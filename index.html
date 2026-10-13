@@ -463,6 +463,14 @@ h2.hh{display:flex;align-items:center;gap:12px}
 .cv-card{position:relative;padding-left:72px;min-height:96px;justify-content:center}
 .cv-av{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-han);font-size:24px;background:color-mix(in srgb,var(--a-chat) 15%,var(--surface));color:var(--a-chat)}
 .lesson{background:linear-gradient(135deg,color-mix(in srgb,var(--a-learn) 14%,var(--surface)),var(--surface) 75%)}
+.turnbox{border:1px dashed var(--a-speak);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.tb-q{font-size:15px;color:var(--muted)}.tb-q b{color:var(--ink);font-size:17px}
+.tb-act{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tb-act .mic-wrap{flex-direction:row;gap:8px}
+.mic.sm{width:60px;height:60px}.mic.sm svg{width:26px;height:26px}
+.tb-live{font-size:18px;min-height:0;text-align:left}
+.tb-res{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px;font-size:14px;color:var(--muted)}
+.tb-res .han{color:var(--ink);font-size:17px}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -557,11 +565,11 @@ h2.hh{display:flex;align-items:center;gap:12px}
   <!-- DIÁLOGOS -->
   <section id="dlg" class="panel" hidden>
     <h2>Diálogos</h2>
-    <p class="lead">Diálogos cortos con el vocabulario de las lecciones. En el modo práctica las frases de B quedan tapadas: dilas tú antes de destaparlas.</p>
+    <p class="lead">Diálogos cortos con el vocabulario de las lecciones. Pulsa <b>Practicar hablando</b>: las frases de la segunda persona se tapan, tú mantienes pulsado el micrófono rojo y las dices. Si no te sale, toca «Ver la respuesta».</p>
     <div class="bar">
       <button class="chip" id="dPy" aria-pressed="true">Pinyin</button>
       <button class="chip" id="dEs" aria-pressed="true">Español</button>
-      <button class="chip" id="dRole" aria-pressed="false">Modo práctica</button>
+      <button class="chip" id="dRole" aria-pressed="false">Practicar hablando</button>
       <button class="btn" id="dAll">▶ Todos seguidos</button>
     </div>
     <div id="dList"></div>
@@ -1659,11 +1667,11 @@ let roleMode=false;
 function renderDlg(){
   $("#dList").innerHTML=D.map((d,di)=>`<article class="dlg"><div class="dlg-head"><div><div class="tag">Lección ${d.l}${d.p?" · Práctica":""}</div><h3>${esc(d.t)}</h3></div><button class="btn ghost" data-play="${di}">▶ Escuchar y repetir</button></div>
   ${d.lines.map((ln,li)=>{const who=ln[0]==="A"?d.a:d.b;const cover=roleMode&&ln[0]==="B";
-   return `<div class="line ${ln[0]}" id="ln-${di}-${li}"><div class="who"><b>${who[0]}</b>${who[1]}</div><div class="txt">${cover?`<button class="hidden-cover" data-reveal="${di}-${li}">Tu turno: dilo en chino («${esc(ln[3])}») y toca para comprobar</button>`:`<div class="h">${ln[1]}</div><div class="p">${ln[2]}</div><div class="e">${esc(ln[3])}</div>${enHTML(ln[1])}`}</div><button class="spk" data-say="${esc(ln[1])}" aria-label="Escuchar"></button></div>`}).join("")}</article>`).join("");
+   return `<div class="line ${ln[0]}" id="ln-${di}-${li}"><div class="who"><b>${who[0]}</b>${who[1]}</div><div class="txt">${cover?`<div class="turnbox"><div class="tb-q">Tu turno: dilo en chino<br><b>«${esc(ln[3])}»</b></div><div class="tb-act"><div class="mic-wrap"><button class="mic sm" data-dmic="${di}-${li}" aria-label="Mantén pulsado y habla">${MIC_SVG}</button><div class="mic-l">Mantén pulsado</div></div><button class="chip" data-reveal="${di}-${li}">Ver la respuesta</button></div><div class="live tb-live"></div></div>`:`<div class="h">${ln[1]}</div><div class="p">${ln[2]}</div><div class="e">${esc(ln[3])}</div>${enHTML(ln[1])}`}</div><button class="spk" data-say="${esc(ln[1])}" aria-label="Escuchar"></button></div>`}).join("")}</article>`).join("");
   fillSpk($("#dList"));
 }
 $("#dList").addEventListener("click",e=>{
-  const r=e.target.closest("[data-reveal]");if(r){const[di,li]=r.dataset.reveal.split("-").map(Number);const ln=D[di].lines[li];r.parentElement.innerHTML=`<div class="h">${ln[1]}</div><div class="p">${ln[2]}</div><div class="e">${esc(ln[3])}</div>${enHTML(ln[1])}`;say(ln[1]);return}
+  const r=e.target.closest("[data-reveal]");if(r){const[di,li]=r.dataset.reveal.split("-").map(Number);const ln=D[di].lines[li];r.closest(".txt").innerHTML=`<div class="h">${ln[1]}</div><div class="p">${ln[2]}</div><div class="e">${esc(ln[3])}</div>${enHTML(ln[1])}`;say(ln[1]);return}
   const p=e.target.closest("[data-play]");if(p)playDialogues([+p.dataset.play]);
 });
 function playDialogues(idx,fin){
@@ -1674,7 +1682,7 @@ function playDialogues(idx,fin){
 $("#dAll").onclick=()=>playDialogues(D.map((_,i)=>i));
 toggle($("#dPy"),v=>$("#dList").classList.toggle("hide-p",!v));
 toggle($("#dEs"),v=>$("#dList").classList.toggle("hide-e",!v));
-toggle($("#dRole"),v=>{roleMode=v;renderDlg()});
+toggle($("#dRole"),v=>{roleMode=v;renderDlg();wireDlgMics()});
 
 /* ===== tonos ===== */
 const TONES=[[1,"1.º tono","Alto y plano, como una nota cantada.","mā 妈 mamá",[[10,15],[190,15]]],[2,"2.º tono","Sube, como al preguntar «¿eh?».","má 麻 cáñamo",[[10,45],[190,10]]],[3,"3.º tono","Baja hasta el fondo y sube un poco.","mǎ 马 caballo",[[10,40],[90,62],[190,25]]],[4,"4.º tono","Cae de golpe, como una orden seca.","mà 骂 regañar",[[10,10],[190,62]]]];
@@ -1822,6 +1830,25 @@ function renderRing(){
   $("#hRing").innerHTML=`<svg viewBox="0 0 88 88" role="img" aria-label="${done} de ${all} pasos hechos"><circle cx="44" cy="44" r="36" fill="none" stroke="var(--surface-2)" stroke-width="9"/><circle cx="44" cy="44" r="36" fill="none" stroke="${p>=1?"var(--ok)":"var(--accent)"}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-p)).toFixed(1)}" transform="rotate(-90 44 44)"/><text x="44" y="50" text-anchor="middle" font-size="19" font-weight="700" fill="var(--ink)" font-family="Source Sans 3,system-ui,sans-serif">${done}/${all}</text></svg><small>${BK.mode==="book"?"de la lección":"plan de hoy"}</small>`;
 }
 
+
+/* ===== diálogos: practicar hablando ===== */
+const MIC_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>';
+function wireDlgMics(){
+  document.querySelectorAll("#dList [data-dmic]").forEach(btn=>{
+    const[di,li]=btn.dataset.dmic.split("-").map(Number),ln=D[di].lines[li],box=btn.closest(".turnbox"),live=box.querySelector(".tb-live");
+    makeMic(btn,{onStart:()=>{live.textContent="Te escucho… suelta al terminar"},onLive:t=>{live.textContent=t},
+      onDone:(cands,err)=>{if(!cands||!cands.length){live.textContent=micErr(err);return}
+        let best=null,heard="";for(const c of cands){const r=scoreOf(c,{h:ln[1]});if(r&&(!best||r.score>best.score)){best=r;heard=c}}
+        if(!best){live.textContent="He oído algo, pero no en chino. Prueba otra vez.";return}
+        const ok=best.score>=passK();
+        if(ok){addPts(Math.round(5+best.score/10));bump("speak");stat("speakOk")}
+        const txt=box.closest(".txt");
+        txt.innerHTML=`<div class="h">${ln[1]}</div><div class="p">${ln[2]}</div><div class="e">${esc(ln[3])}</div>${enHTML(ln[1])}<div class="tb-res"><span class="score-chip ${ok?"ok":"no"}">${ok?"✓ ":""}${best.score}</span><span>He entendido: <span class="han">${esc(heard)}</span></span></div>`;
+        speak(ln[1]);
+      }});
+  });
+}
+
 /* ===== logros y medallas ===== */
 const curStreak=()=>PT.last===today()||PT.last===yesterday()?PT.streak:0;
 const TIER=[["Bronce","--m1"],["Plata","--m2"],["Oro","--m3"],["Jade","--m4"]];
@@ -1896,12 +1923,12 @@ document.addEventListener("click",e=>{if(e.target.closest("[data-stats]"))openSt
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#medalPop").hidden)showMedal();else if(!$("#statsSheet").hidden)closeSheet("#statsSheet")}});
 
 /* ===== inicio de la app ===== */
-initSettings();renderPts();renderBasic();renderDlg();fillSpk();
+initSettings();renderPts();renderBasic();renderDlg();fillSpk();wireDlgMics();
 $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();
-const APP_VER="2026-10-13.7";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.8";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

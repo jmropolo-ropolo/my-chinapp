@@ -7,6 +7,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mi chino">
 <meta name="theme-color" content="#1d6b57">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Mi chino HSK 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
@@ -404,6 +407,19 @@ button.stat:hover,.pts:hover{border-color:var(--accent)}
 .upd{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:45;background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 10px 30px -12px rgba(0,0,0,.5);max-width:560px;margin:0 auto}
 .upd .btn{background:var(--gold);color:#1a1405}
 .ver{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+/* iconos y modo libro */
+.bnav svg{stroke-width:1.8}
+.bnav button[aria-current="page"] svg{fill:color-mix(in srgb,currentColor 16%,transparent)}
+.step .n svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.step.next .n{background:var(--accent);color:var(--accent-ink)}
+.step.done .n svg{stroke-width:2.6}
+.lesson{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;flex-direction:column;gap:2px}
+.lesson .ln{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);font-weight:700}
+.lesson .lt{font-family:var(--f-han);font-size:clamp(26px,7vw,34px);line-height:1.2}
+.lesson .lp{color:var(--accent);font-weight:600}
+.lesson small{color:var(--muted);margin-top:4px}
+.lesson .mini{margin-top:8px}
+.done-all{background:color-mix(in srgb,var(--ok) 12%,var(--surface));border:1px solid var(--ok);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-weight:600}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -428,9 +444,11 @@ button.stat:hover,.pts:hover{border-color:var(--accent)}
   <!-- INICIO -->
   <section id="home" class="panel">
     <div class="hello">
-      <div><div class="big-han">你好！</div><div class="hello-name" id="helloName"></div><p class="lead" style="margin:6px 0 0">Tu plan de hoy: cinco pasos cortos, unos 15 minutos.</p></div>
+      <div><div class="big-han">你好！</div><div class="hello-name" id="helloName"></div><p class="lead" id="homeLead" style="margin:6px 0 0">Tu plan de hoy: cinco pasos cortos, unos 15 minutos.</p></div>
       <div class="stats" id="hStats"></div>
     </div>
+    <div class="pass-bar"><span class="sel">Cómo estudiar</span><div class="segc" id="modeSeg"></div></div>
+    <div id="bookHead" hidden></div>
     <ol class="plan" id="plan"></ol>
     <button class="btn big" id="homeGo"></button>
     <div class="rank" id="homeRank" hidden></div>
@@ -736,6 +754,10 @@ button.stat:hover,.pts:hover{border-color:var(--accent)}
     <div class="set-group">
       <div class="set-row col"><span>Exigencia para aprobar</span><div class="segc" id="sPass"></div><small>Nota mínima para avanzar en Hablar y en Conversar.</small></div>
     </div>
+    <h3>Cómo estudiar</h3>
+    <div class="set-group">
+      <div class="set-row col"><span>Modo</span><div class="segc" id="sMode"></div><small>Libre: tú eliges qué practicar con un plan diario. Seguir el libro: la app te guía lección a lección, como en clase.</small></div>
+    </div>
     <h3>Persona</h3>
     <div class="set-group">
       <div class="set-row"><span id="setWho2"></span><button class="chip" id="setSwitch">Cambiar de persona</button></div>
@@ -1027,7 +1049,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(
 const PL={items:[],i:0,run:0,paused:true,onItem:null,title:""};
 async function wait(ms,run){const end=Date.now()+ms;while(Date.now()<end){if(run!==PL.run)return;await sleep(Math.min(100,end-Date.now()))}}
 const haltSpeech=()=>{try{speechSynthesis.cancel()}catch(e){}};
-function startPlayer(items,title,onItem){if(!items.length)return;PL.items=items;PL.i=0;PL.title=title;PL.onItem=onItem||null;$("#player").hidden=false;document.body.classList.add("playing");playGo()}
+function startPlayer(items,title,onItem,fin){if(!items.length)return;PL.fin=fin||null;PL.items=items;PL.i=0;PL.title=title;PL.onItem=onItem||null;$("#player").hidden=false;document.body.classList.add("playing");playGo()}
 function setPauseBtn(play){const b=$("#plPause");b.textContent=play?"▶":"❚❚";b.setAttribute("aria-label",play?"Continuar":"Pausa")}
 function playGo(){PL.run++;PL.paused=false;setPauseBtn(false);loop(PL.run)}
 function pausePlayer(){if(PL.paused){playGo();return}PL.run++;PL.paused=true;haltSpeech();setStatus("En pausa");setPauseBtn(true)}
@@ -1063,7 +1085,7 @@ async function loop(run){
     }
     PL.i++;
   }
-  PL.i=0;PL.paused=true;setStatus("Terminado. Pulsa ▶ para empezar otra vez");setPauseBtn(true);
+  {const f=PL.fin;PL.fin=null;if(f)f()}PL.i=0;PL.paused=true;setStatus("Terminado. Pulsa ▶ para empezar otra vez");setPauseBtn(true);
 }
 $("#plPause").onclick=pausePlayer;$("#plStop").onclick=stopPlayer;
 $("#plNext").onclick=()=>stepPlayer(1);$("#plPrev").onclick=()=>stepPlayer(-1);
@@ -1107,7 +1129,7 @@ function renderHome(){
   if(DAY.day!==today())DAY={day:today(),cards:0,test:0,speak:0,write:0,chat:0};
   let next=-1;
   $("#plan").innerHTML=PLAN.map((s,i)=>{const v=Math.min(DAY[s.k]||0,s.goal),done=v>=s.goal;if(!done&&next<0)next=i;
-    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n">${done?"✓":i+1}</span><div><b>${s.t}</b><span class="sub">${s.w} · ${v} de ${s.goal}</span><div class="mini"><i style="width:${v/s.goal*100}%"></i></div></div><button class="btn ${!done&&next===i?"":"ghost"}" data-step="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
+    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n">${done?ICON.check:ICON[PLAN_IC[s.k]]}</span><div><b>${s.t}</b><span class="sub">${s.w} · ${v} de ${s.goal}</span><div class="mini"><i style="width:${v/s.goal*100}%"></i></div></div><button class="btn ${!done&&next===i?"":"ghost"}" data-step="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
   const go=$("#homeGo");
   if(next<0){go.textContent="¡Plan de hoy completado! Conversa un poco más";go.onclick=()=>goPanel("conv")}
   else{go.textContent=`Continuar: ${PLAN[next].t.toLowerCase()}`;go.onclick=PLAN[next].go}
@@ -1235,8 +1257,8 @@ function drawCard(){
 }
 $("#fc").onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();$("#fc").onclick()}};
 $("#cSpk").onclick=()=>{if(deck.length)say(deck[0].h)};
-$("#cYes").onclick=()=>{if(!deck.length)return;const w=deck.shift();known.add(w.id);saveKnown();doneCount++;flipped=false;addPts(2);bump("cards");drawCard()};
-$("#cNo").onclick=()=>{if(!deck.length)return;const w=deck.shift();known.delete(w.id);saveKnown();deck.splice(Math.min(deck.length,3+Math.floor(Math.random()*4)),0,w);flipped=false;bump("cards");drawCard()};
+$("#cYes").onclick=()=>{if(!deck.length)return;const w=deck.shift();known.add(w.id);saveKnown();doneCount++;flipped=false;addPts(2);bump("cards");if(cState.v===BK.L)bkCount("cards",10);drawCard()};
+$("#cNo").onclick=()=>{if(!deck.length)return;const w=deck.shift();known.delete(w.id);saveKnown();deck.splice(Math.min(deck.length,3+Math.floor(Math.random()*4)),0,w);flipped=false;bump("cards");if(cState.v===BK.L)bkCount("cards",10);drawCard()};
 $("#cAuto").onclick=()=>{if(!deck.length)buildDeck();startPlayer(deck.map(wordItem),"Tarjetas")};
 
 /* ===== test ===== */
@@ -1253,7 +1275,7 @@ const pinyinOpt=o=>`<button class="choice" data-id="${o.id}"><span class="py">${
 function tScoreLine(){$("#tScore").innerHTML=`Pregunta ${tIdx+1} de ${tList.length} · ${tOk} aciertos${tCombo>=2?` · <span class="combo">racha ×${tCombo}</span>`:""}`}
 function showQ(){
   tAns=false;$("#tFb").textContent="";$("#tFb").className="fb";
-  if(tIdx>=tList.length){tq=null;if(!tDone){tDone=true;bump("test");stat("tests");if(tList.length>=10&&tOk===tList.length)stat("perfect")}$("#tScore").textContent="";
+  if(tIdx>=tList.length){tq=null;if(!tDone){tDone=true;bump("test");if(tState.v===BK.L&&tOk>=7)bkDone("test");stat("tests");if(tList.length>=10&&tOk===tList.length)stat("perfect")}$("#tScore").textContent="";
     $("#tQ").innerHTML=`<div class="qe">${tOk} / ${tList.length}</div><div class="combo">+${tPts} puntos</div><div class="lead" style="margin:0">${tOk>=9?"¡Excelente!":tOk>=6?"Bien. Repasa en Tarjetas las que fallaste.":"Toca repasar: prueba las Tarjetas con «Solo las que no sé»."}</div>`;
     $("#tChoices").innerHTML="";$("#tNext").textContent="Otro test";$("#tNext").onclick=newTest;return}
   $("#tNext").textContent="Siguiente";$("#tNext").onclick=()=>{tIdx++;showQ()};
@@ -1312,7 +1334,7 @@ function scoreOf(raw,it){
 }
 function kAvg(){const sc=K.scores.filter(x=>x!=null);return sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):null}
 function kUpdAvg(){const a=kAvg(),n=K.scores.filter(x=>x!=null).length;$("#kAvg").textContent=a==null?"":`Nota media: ${a} · ${n} hechos`}
-function kStart(items){K.items=items||kBuild();K.i=0;K.scores=[];K.aw=[];$("#kEnd").hidden=true;$("#kStage").hidden=false;kUpdAvg();kShow();$("#kStage").scrollIntoView({block:"start"})}
+function kStart(items){K.src=items?"":$("#kSrc").value;K.items=items||kBuild();K.i=0;K.scores=[];K.aw=[];$("#kEnd").hidden=true;$("#kStage").hidden=false;kUpdAvg();kShow();$("#kStage").scrollIntoView({block:"start"})}
 function kShow(){
   clearTimeout(K.timer);clearTimeout(K.deb);const run=++K.run;
   if(K.i>=K.items.length)return kSummary();
@@ -1333,7 +1355,7 @@ function kShow(){
 }
 function kResult(score,diff,heard){
   const it=K.items[K.i];K.done=true;clearTimeout(K.timer);K.scores[K.i]=Math.max(score,K.scores[K.i]??0);
-  if(!K.aw[K.i]){K.aw[K.i]=1;addPts(score/10);bump("speak");if(score>=passK())stat("speakOk");if(score>=90)stat("speakGold")}
+  if(!K.aw[K.i]){K.aw[K.i]=1;addPts(score/10);bump("speak");if(score>=passK())stat("speakOk");if(score>=passK()&&K.src==="w:"+BK.L)bkCount("speak",5);if(score>=90)stat("speakGold")}
   const ok=score>=passK();
   $("#kHeard").innerHTML=`He entendido: <span class="han">${esc(heard)}</span>`;
   $("#kScore").textContent=score;$("#kScore").className="k-score "+(ok?"ok":score>=40?"mid":"no");
@@ -1398,7 +1420,7 @@ function wQuiz(){
     onComplete:()=>{const m=$("#wm"+W.ci);m.textContent=chars[W.ci];m.classList.add("done");W.ci++;setTimeout(wChar,600)}});
 }
 function wWordDone(){
-  const w=W.list[W.i];const score=Math.max(0,100-W.mist*12);W.sum+=score;const p=Math.round(score/10)+Array.from(w.h).length;W.pts+=p;addPts(p);bump("write");stat("chars",Array.from(w.h).length);
+  const w=W.list[W.i];const score=Math.max(0,100-W.mist*12);W.sum+=score;const p=Math.round(score/10)+Array.from(w.h).length;W.pts+=p;addPts(p);bump("write");stat("chars",Array.from(w.h).length);if(W.state.v===BK.L)bkCount("write",3);
   $("#wFb").className="fb "+(score>=70?"ok":"no");$("#wFb").textContent=`${score>=90?"¡Perfecto!":score>=70?"¡Bien!":"Hecho, con algunos errores"} · ${W.mist} ${W.mist===1?"error":"errores"} · nota ${score}`;
   speak(w.h);setTimeout(()=>{W.i++;wShow()},1800);
 }
@@ -1578,7 +1600,7 @@ $("#cvSkip").onclick=()=>{const st=CONV[CV.i]?.steps[CV.step];if(!st)return;cons
 $("#cvExit").onclick=()=>{CV.run++;haltSpeech();renderCvList()};
 function cvEnd(){
   const c=CONV[CV.i],sc=c.steps.map((_,i)=>CV.scores[i]??0),avg=Math.round(sc.reduce((a,b)=>a+b,0)/sc.length);
-  cvBest[CV.i]=Math.max(avg,cvBest[CV.i]??0);store.set("hsk1-cvbest",cvBest);ST.convDone=[...new Set([...(ST.convDone||[]),CV.i])];if(avg>=90)ST.convGold=(ST.convGold||0)+1;stat("convs");
+  cvBest[CV.i]=Math.max(avg,cvBest[CV.i]??0);store.set("hsk1-cvbest",cvBest);ST.convDone=[...new Set([...(ST.convDone||[]),CV.i])];if(avg>=90)ST.convGold=(ST.convGold||0)+1;stat("convs");bkDone("conv"+CV.i);
   $("#conv").classList.remove("inroom");$("#cvRoom").hidden=true;const s=$("#cvSum");s.hidden=false;
   s.innerHTML=`<div class="k-score ${avg>=70?"ok":avg>=40?"mid":"no"}">${avg}</div><div class="lead" style="margin:0">Nota media de «${esc(c.t)}» · +${CV.pts} puntos</div>
   ${CV.review.length?`<h3>Frases para repasar</h3><ul class="rules" style="text-align:left">${CV.review.map(r=>`<li><span class="han" style="font-size:20px">${esc(r.h)}</span> · ${esc(r.py)} · ${esc(r.e)}</li>`).join("")}</ul>`:"<p class='lead' style='margin:0'>¡Todo bien dicho!</p>"}
@@ -1599,10 +1621,10 @@ $("#dList").addEventListener("click",e=>{
   const r=e.target.closest("[data-reveal]");if(r){const[di,li]=r.dataset.reveal.split("-").map(Number);const ln=D[di].lines[li];r.parentElement.innerHTML=`<div class="h">${ln[1]}</div><div class="p">${ln[2]}</div><div class="e">${esc(ln[3])}</div>${enHTML(ln[1])}`;say(ln[1]);return}
   const p=e.target.closest("[data-play]");if(p)playDialogues([+p.dataset.play]);
 });
-function playDialogues(idx){
+function playDialogues(idx,fin){
   const items=[];idx.forEach(di=>{const d=D[di];d.lines.forEach((ln,li)=>{const who=ln[0]==="A"?d.a:d.b;items.push({h:ln[1],pyHTML:esc(ln[2]),e:ln[3],el:`ln-${di}-${li}`,who:`${d.t} · ${who[1]}`,turn:roleMode&&ln[0]==="B"})})});
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  startPlayer(items,"Diálogo",it=>{document.querySelectorAll(".line.playing").forEach(x=>x.classList.remove("playing"));const el=document.getElementById(it.el);if(el){el.classList.add("playing");el.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"})}});
+  startPlayer(items,"Diálogo",it=>{document.querySelectorAll(".line.playing").forEach(x=>x.classList.remove("playing"));const el=document.getElementById(it.el);if(el){el.classList.add("playing");el.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"})}},fin);
 }
 $("#dAll").onclick=()=>playDialogues(D.map((_,i)=>i));
 toggle($("#dPy"),v=>$("#dList").classList.toggle("hide-p",!v));
@@ -1668,11 +1690,83 @@ function initProfiles(){
 }
 
 
+
+/* ===== iconos ===== */
+const ICON={
+ home:'<path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9v10.5h13V9"/><path d="M10 19.5V14h4v5.5"/>',
+ learn:'<path d="M2.5 5.5c3-1.2 6.2-1 9.5 1 3.3-2 6.5-2.2 9.5-1V19c-3-1.2-6.2-1-9.5 1-3.3-2-6.5-2.2-9.5-1z"/><path d="M12 6.5V20"/>',
+ practice:'<rect x="3.5" y="7.5" width="13" height="13" rx="2.5"/><path d="M8 4.5h9.5a3 3 0 0 1 3 3V17"/><path d="M7 14l2.2 2.2L13.5 12"/>',
+ chat:'<path d="M14.5 4h-9A2.5 2.5 0 0 0 3 6.5v5A2.5 2.5 0 0 0 5.5 14H6v3l3.5-3h5a2.5 2.5 0 0 0 2.5-2.5v-5A2.5 2.5 0 0 0 14.5 4z"/><path d="M17 8.5h1.5A2.5 2.5 0 0 1 21 11v5a2.5 2.5 0 0 1-2.5 2.5H18v3l-3.5-3h-3a2.5 2.5 0 0 1-2-1"/>',
+ cards:'<rect x="3" y="6" width="12" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v12"/>',
+ test:'<path d="M9 3.5h6v3H9z"/><path d="M15 5h2.5A1.5 1.5 0 0 1 19 6.5v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5v-13A1.5 1.5 0 0 1 6.5 5H9"/><path d="M8.5 13l2 2 4-4"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/>',
+ pen:'<path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 0 1 3 3L8 18.5z"/><path d="M13.5 7l3 3"/>',
+ listen:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.5"/>',
+ dialog:'<circle cx="8" cy="8.5" r="3"/><circle cx="16.5" cy="8.5" r="3"/><path d="M2.5 19.5a5.5 5.5 0 0 1 11 0"/><path d="M13.5 14.6a5.5 5.5 0 0 1 8 4.9"/>',
+ idea:'<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.1 2.2h5c0-.9.5-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>'};
+const svgI=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+for(const k in ICON)if(!ICON[k].startsWith("<svg"))ICON[k]=svgI(k);
+const PLAN_IC={cards:"cards",test:"test",speak:"mic",write:"pen",chat:"chat"};
+const NAV_IC={home:"home",learn:"learn",practice:"practice",chat:"chat"};
+document.querySelectorAll("#bnav [data-g]").forEach(b=>{const sv=b.querySelector("svg");if(sv)sv.outerHTML=ICON[NAV_IC[b.dataset.g]]});
+
+/* ===== seguir el libro ===== */
+const BOOK=[
+ {L:1,h:"AI小语，你好！",py:"AI Xiǎoyǔ, nǐ hǎo!",es:"¡Hola, AI Xiaoyu! · saludar, dar las gracias y despedirse",gram:{t:"los cuatro tonos",go:"tones"},conv:[1]},
+ {L:2,h:"我叫李文",py:"Wǒ jiào Lǐ Wén",es:"Me llamo Li Wen · presentarse y pedir perdón",gram:{t:"el orden de la frase",go:"basic"},conv:[2,0]},
+ {L:3,h:"我是中国人",py:"Wǒ shì Zhōngguó rén",es:"Soy chino · nacionalidad, 的 y preguntas con 吗",gram:{t:"是, 的 y 吗",go:"phr"},conv:[7,3]}];
+const BK=Object.assign({mode:"free",L:1,done:{},cnt:{}},store.get("hsk1-book",{}));
+const saveBK=()=>store.set("hsk1-book",BK);
+function setFilter(sel,state,v){state.v=v;$(sel).querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v)===String(v)))}
+function bkSteps(b){const L=b.L;return[
+ {k:"vocab",ic:"listen",t:"Escucha y repite el vocabulario",go:()=>startPlayer(V.filter(w=>w.l===L).map(wordItem),"Vocabulario · Lección "+L,null,()=>bkDone("vocab",L))},
+ {k:"dlg",ic:"dialog",t:"Escucha y repite los diálogos",go:()=>{goPanel("dlg");playDialogues(D.map((d,i)=>[d,i]).filter(([d])=>d.l===L&&!d.p).map(([,i])=>i),()=>bkDone("dlg",L))}},
+ {k:"gram",ic:"idea",t:"Gramática: "+b.gram.t,go:()=>{bkDone("gram",L);goPanel(b.gram.go)}},
+ {k:"cards",ic:"cards",goal:10,t:"Repasa 10 tarjetas de la lección",go:()=>{goPanel("cards");setFilter("#cFilters",cState,L);buildDeck()}},
+ {k:"test",ic:"test",t:"Aprueba el test de la lección (7 de 10)",go:()=>{goPanel("test");setFilter("#tFilters",tState,L);newTest()}},
+ {k:"speak",ic:"mic",goal:5,t:"Di bien 5 palabras de la lección",go:()=>{goPanel("speak");$("#kSrc").value="w:"+L;$("#kRoleWrap").hidden=true;kStart()}},
+ {k:"write",ic:"pen",goal:3,t:"Escribe 3 palabras a mano",go:()=>{goPanel("write");setFilter("#wFilters",W.state,L);wStart()}},
+ ...b.conv.map(ci=>({k:"conv"+ci,ic:"chat",t:"Conversación: "+CONV[ci].t,go:()=>{goPanel("conv");cvStart(ci)}}))]}
+const bkIsDone=(L,k)=>!!BK.done[L+":"+k];
+const bkLessonDone=L=>{const b=BOOK.find(x=>x.L===L);return!!b&&bkSteps(b).every(s=>bkIsDone(L,s.k))};
+function bkDone(k,L=BK.L){if(bkIsDone(L,k))return;const b=BOOK.find(x=>x.L===L);if(!b||!bkSteps(b).some(s=>s.k===k))return;
+  BK.done[L+":"+k]=1;saveBK();addPts(5);
+  if(bkLessonDone(L))checkMedals();
+  if(cur==="home")renderHome()}
+function bkCount(k,goal){const key=BK.L+":"+k;BK.cnt[key]=(BK.cnt[key]||0)+1;saveBK();if(BK.cnt[key]>=goal)bkDone(k);else if(cur==="home")renderHome()}
+function renderMode(){["#modeSeg","#sMode"].forEach(sel=>{const el=$(sel);if(!el)return;
+  el.innerHTML=[["free","Libre","plan diario"],["book","Seguir el libro","lección a lección"]].map(([k,t,d])=>`<button data-mode="${k}" aria-pressed="${BK.mode===k}">${t}<small>${d}</small></button>`).join("")})}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-mode]");if(!b)return;BK.mode=b.dataset.mode;saveBK();renderMode();if(cur==="home")renderHome()});
+function renderBook(){
+  const b=BOOK.find(x=>x.L===BK.L)||BOOK[0],steps=bkSteps(b),nDone=steps.filter(s=>bkIsDone(b.L,s.k)).length;
+  $("#homeLead").textContent="Sigue el libro paso a paso: escucha, repasa y habla con lo de cada lección.";
+  const head=$("#bookHead");head.hidden=false;
+  head.innerHTML=`<div class="bar">${BOOK.map(x=>`<button class="chip" data-bkl="${x.L}" aria-pressed="${x.L===b.L}">${bkLessonDone(x.L)?"✓ ":""}Lección ${x.L}</button>`).join("")}</div>
+  ${bkLessonDone(b.L)?`<div class="done-all">¡Lección ${b.L} completada! +5 puntos por cada paso.</div>`:""}
+  <div class="lesson"><span class="ln">Lección ${b.L} · libro azul y cuaderno rojo</span><span class="lt">${b.h}</span><span class="lp">${esc(b.py)}</span><span>${esc(b.es)}</span><div class="mini"><i style="width:${nDone/steps.length*100}%"></i></div><small>${nDone} de ${steps.length} pasos</small></div>`;
+  let next=-1;
+  $("#plan").innerHTML=steps.map((s,i)=>{const done=bkIsDone(b.L,s.k);if(!done&&next<0)next=i;const c=BK.cnt[b.L+":"+s.k]||0;
+    const sub=done?"Hecho":s.goal?`${Math.min(c,s.goal)} de ${s.goal}`:"Pendiente";
+    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n">${done?ICON.check:ICON[s.ic]}</span><div><b>${esc(s.t)}</b><span class="sub">${sub}</span>${s.goal&&!done?`<div class="mini"><i style="width:${Math.min(c,s.goal)/s.goal*100}%"></i></div>`:""}</div><button class="btn ${!done&&next===i?"":"ghost"}" data-bks="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
+  const go=$("#homeGo"),nb=BOOK.find(x=>x.L===b.L+1);
+  if(next>=0){go.textContent=`Continuar: ${steps[next].t.charAt(0).toLowerCase()+steps[next].t.slice(1)}`;go.onclick=steps[next].go}
+  else if(nb){go.textContent=`Pasar a la Lección ${nb.L}: ${nb.h}`;go.onclick=()=>{BK.L=nb.L;saveBK();renderHome();window.scrollTo(0,0)}}
+  else{go.textContent="¡Has terminado las lecciones 1 a 3! Sigue practicando en Conversar";go.onclick=()=>goPanel("conv")}
+  $("#plan").onclick=e=>{const x=e.target.closest("[data-bks]");if(x)steps[+x.dataset.bks].go()};
+  head.querySelectorAll("[data-bkl]").forEach(x=>x.onclick=()=>{BK.L=+x.dataset.bkl;saveBK();renderHome()});
+}
+const _renderHome=renderHome;
+renderHome=function(){_renderHome();renderMode();
+  if(BK.mode==="book")renderBook();
+  else{$("#bookHead").hidden=true;$("#homeLead").textContent="Tu plan de hoy: cinco pasos cortos, unos 15 minutos.";$("#plan").onclick=e=>{const b=e.target.closest("[data-step]");if(b)PLAN[+b.dataset.step].go()}}};
+
 /* ===== logros y medallas ===== */
 const curStreak=()=>PT.last===today()||PT.last===yesterday()?PT.streak:0;
 const TIER=[["Bronce","--m1"],["Plata","--m2"],["Oro","--m3"],["Jade","--m4"]];
 const knownCount=()=>V.filter(w=>known.has(w.id)).length;
 const FAMS=[
+ {id:"libro",ch:"书",n:"Libro",d:g=>`Completa ${g===1?"una lección":g+" lecciones"} del libro`,v:()=>BOOK.filter(b=>bkLessonDone(b.L)).length,g:[1,2,3]},
  {id:"pts",ch:"点",n:"Puntos",d:g=>`Consigue ${g} puntos`,v:()=>PT.total,g:[100,500,1000,2500]},
  {id:"racha",ch:"火",n:"Racha",d:g=>`Practica ${g} días seguidos`,v:()=>Math.max(PT.best||0,curStreak()),g:[3,7,14,30]},
  {id:"pal",ch:"词",n:"Palabras",d:g=>`Marca ${g} palabras como sabidas`,v:()=>knownCount(),g:[25,50,100,V.length]},
@@ -1746,7 +1840,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();
-const APP_VER="2026-10-13.5";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.6";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

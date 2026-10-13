@@ -14,7 +14,7 @@
 /* Layout: app de una columna pensada para el móvil; barra inferior con 4 secciones (Inicio, Aprender, Practicar, Conversar), subpestañas arriba, tarjetas grandes de caracteres con colores de tono */
 :root{
   --bg:#f3f6f4; --surface:#ffffff; --surface-2:#e8eeeb; --line:#d3ddd8;
-  --ink:#16201c; --muted:#5b6b64; --accent:#1d6b57; --accent-ink:#ffffff; --gold:#b7791f;
+  --ink:#16201c; --muted:#5b6b64; --accent:#1d6b57; --accent-ink:#ffffff; --av-ink:#ffffff; --gold:#b7791f;
   --t1:#c8312b; --t2:#c27a00; --t3:#2f8a3a; --t4:#2459b8; --t5:#7a8781;
   --ok:#2f8a3a; --bad:#c8312b;
   --f-han:"Noto Serif SC","Songti SC","SimSun",serif;
@@ -23,12 +23,12 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#111715; --surface:#19211e; --surface-2:#222c28; --line:#2f3b36;
-  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --gold:#f0b43c;
+  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --av-ink:#0d1a15; --gold:#f0b43c;
   --t1:#ff6b63; --t2:#f0b43c; --t3:#6fcf74; --t4:#78a6ff; --t5:#8d9a94;
   --ok:#6fcf74; --bad:#ff6b63; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111715; --surface:#19211e; --surface-2:#222c28; --line:#2f3b36;
-  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --gold:#f0b43c;
+  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --av-ink:#0d1a15; --gold:#f0b43c;
   --t1:#ff6b63; --t2:#f0b43c; --t3:#6fcf74; --t4:#78a6ff; --t5:#8d9a94;
   --ok:#6fcf74; --bad:#ff6b63; color-scheme:dark}
 *{box-sizing:border-box}
@@ -316,6 +316,54 @@ body.playing{overflow:hidden}
 .opt{border:1px dashed var(--accent);background:var(--bg);color:var(--ink);border-radius:12px;padding:8px 12px;cursor:pointer;text-align:left;display:flex;flex-direction:column}
 .opt b{color:var(--accent);font-size:18px}.opt small{color:var(--muted);font-size:14px}
 .hide-cvpy .msg .mp{display:none}.hide-cves .msg .me-es{display:none}
+/* perfiles y ajustes */
+body.locked{overflow:hidden}
+.iconbtn{display:inline-flex;align-items:center;gap:6px}
+.iconbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.who-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:3px 12px 3px 3px;font:600 14px var(--f-body);cursor:pointer;max-width:46vw}
+.who-btn span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--av-ink);font:700 16px var(--f-body);flex:0 0 auto}
+.av.sm{width:28px;height:28px;font-size:13px}
+.c0{background:var(--accent)}.c1{background:var(--t4)}.c2{background:var(--t1)}.c3{background:var(--t2)}.c4{background:var(--t3)}
+.sheet{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--ink) 45%,transparent);display:flex;align-items:flex-end;justify-content:center}
+.sheet-in{background:var(--bg);width:100%;max-width:620px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.sheet{align-items:center}.sheet-in{border-radius:20px}}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px}
+.sheet-head h2{margin:0}
+.sheet h3{margin:18px 0 8px;font:700 13px var(--f-body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.set-group{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:2px 14px}
+.set-row{display:flex;justify-content:space-between;align-items:center;gap:10px 14px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.set-row:last-child{border-bottom:0}
+.set-row.col{flex-direction:column;align-items:stretch}
+.set-row>span:first-child{font-weight:600}
+.set-row small{color:var(--muted)}
+.set-row select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.set-row .ctl{display:flex;align-items:center;gap:8px}
+.set-row input[type=range]{accent-color:var(--accent);width:150px}
+.set-row output{font-variant-numeric:tabular-nums;font-weight:700;min-width:3em}
+.segc{display:flex;gap:4px;background:var(--surface-2);border-radius:12px;padding:4px;min-width:0}
+.segc button{flex:1;border:0;background:transparent;color:var(--ink);padding:7px 10px;border-radius:9px;font:600 14px var(--f-body);cursor:pointer;line-height:1.2}
+.segc button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18);color:var(--accent)}
+.segc button small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+.who-list{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.who-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.who-row.me{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.who-row b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.who-row small{color:var(--muted)}
+.who-acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.who-add{display:flex;gap:8px;margin-top:8px}
+.who-add input{flex:1;min-width:0;font:inherit;font-size:17px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.hello-name{font-family:var(--f-disp);font-size:24px;font-weight:700;margin-top:4px}
+.set-card{width:100%;text-align:left;cursor:pointer;color:var(--ink);font:inherit;display:flex;gap:12px;align-items:center}
+.set-card svg{width:26px;height:26px;fill:none;stroke:var(--accent);stroke-width:1.8;flex:0 0 auto}
+.rank{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.rank h3{margin:0 0 10px;font-size:17px}
+.rank ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.rank li{display:grid;grid-template-columns:22px auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.rank .pos{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.rank .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rank .nm small{display:block;font-weight:400;color:var(--muted)}
+.rank .pt{font-variant-numeric:tabular-nums;font-weight:700;color:var(--gold);font-family:var(--f-disp);font-size:18px}
+.pass-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.pass-bar .segc{flex:1;max-width:420px}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -326,17 +374,12 @@ body.playing{overflow:hidden}
     <h1><span class="han">学中文</span>Mi chino HSK 1</h1>
     <div class="top-right">
       <div class="pts" aria-live="polite"><b id="ptTotal">0</b><span id="ptLevel">puntos</span></div>
-      <button class="iconbtn" id="audioBtn" aria-expanded="false" aria-controls="audioSet">Audio</button>
+      <button class="who-btn" id="whoBtn" aria-label="Cambiar de persona"><span class="av sm c0" id="whoAv"></span><span id="whoName">¿Quién?</span></button>
+      <button class="iconbtn" id="setBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
     </div>
   </header>
 
-  <div class="audio-set" id="audioSet" hidden aria-label="Ajustes de audio">
-    <label for="sRate">Velocidad <input type="range" id="sRate" min="0.5" max="1.2" step="0.1"><output id="sRateOut">0.8×</output></label>
-    <label for="sGap">Tiempo para repetir <select id="sGap"><option value="0">Sin pausa</option><option value="1.5">Corto</option><option value="2.5">Normal</option><option value="4">Largo</option></select></label>
-    <label for="sReps">Veces cada una <select id="sReps"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
-    <label for="sReveal">Significado <select id="sReveal"><option value="before">Desde el principio</option><option value="after">Después de repetir</option></select></label>
-    <button class="chip" id="sTest">Probar voz</button>
-  </div>
+  
 
   <nav class="subnav" id="subnav" role="tablist" hidden></nav>
 
@@ -345,12 +388,14 @@ body.playing{overflow:hidden}
   <!-- INICIO -->
   <section id="home" class="panel">
     <div class="hello">
-      <div><div class="big-han">你好！</div><p class="lead" style="margin:6px 0 0">Tu plan de hoy: cinco pasos cortos, unos 15 minutos.</p></div>
+      <div><div class="big-han">你好！</div><div class="hello-name" id="helloName"></div><p class="lead" style="margin:6px 0 0">Tu plan de hoy: cinco pasos cortos, unos 15 minutos.</p></div>
       <div class="stats" id="hStats"></div>
     </div>
     <ol class="plan" id="plan"></ol>
     <button class="btn big" id="homeGo"></button>
+    <div class="rank" id="homeRank" hidden></div>
     <div class="tip" id="homeTip"></div>
+    <button class="tip set-card" id="homeSet"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span><b>Ajustes</b><br><span class="count">Velocidad de la voz, tiempo para repetir y exigencia para aprobar al hablar.</span></span></button>
   </section>
 
   <!-- LO BÁSICO -->
@@ -518,13 +563,14 @@ body.playing{overflow:hidden}
   <!-- HABLAR -->
   <section id="speak" class="panel" hidden>
     <h2>Hablar</h2>
-    <p class="lead">La app te dice qué decir, tú mantienes pulsado el micrófono, lo dices y te pone nota de 0 a 100. Con 70 o más, avanza sola.</p>
+    <p class="lead">La app te dice qué decir, tú mantienes pulsado el micrófono, lo dices y te pone nota de 0 a 100. Cuando apruebas, avanza sola.</p>
     <div class="note" id="micHelp"><b>Cómo hablar:</b> mantén pulsado el botón rojo mientras hablas y suéltalo al terminar. La primera vez el navegador te pedirá permiso para usar el micrófono. La app comprueba si se te entiende; no mide los tonos al detalle.</div>
     <div class="note" id="micNo" hidden>Este navegador no puede escucharte. Abre la página en <b>Safari</b> (iPhone o iPad) o en <b>Chrome</b> (Android), con conexión a internet.</div>
     <div class="bar">
       <label class="sel" for="kSrc">Practicar <select id="kSrc"></select></label>
       <label class="sel" for="kRole" id="kRoleWrap" hidden>Tu papel <select id="kRole"><option value="B">Persona B (respondes)</option><option value="A">Persona A (empiezas)</option></select></label>
     </div>
+    <div class="pass-bar"><span class="sel">Para aprobar</span><div class="segc" id="kPass"></div></div>
     <div class="bar">
       <button class="chip" id="kMem" aria-pressed="false">Modo memoria (sin ver el chino)</button>
       <button class="btn" id="kGo">▶ Empezar</button>
@@ -596,6 +642,7 @@ body.playing{overflow:hidden}
     <h2>Conversar</h2>
     <p class="lead">Conversaciones con varias respuestas posibles. Escucha, mantén pulsado el micrófono y contesta como quieras: la app reconoce tu respuesta, te pone nota y la conversación sigue según lo que digas.</p>
     <div class="note" id="micNo2" hidden>Este navegador no puede escucharte. Abre la página en <b>Safari</b> (iPhone o iPad) o en <b>Chrome</b> (Android), con conexión a internet.</div>
+    <div class="pass-bar"><span class="sel">Para aprobar</span><div class="segc" id="cvPass"></div></div>
     <div id="cvList" class="grid"></div>
     <div id="cvRoom" hidden>
       <div class="persona" id="cvPersona"></div>
@@ -628,6 +675,41 @@ body.playing{overflow:hidden}
   <button data-g="chat"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Conversar</button>
 </nav>
 
+
+<div class="sheet" id="setSheet" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="sheet-in">
+    <div class="sheet-head"><h2 id="setTitle">Ajustes</h2><button class="btn" id="setDone">Listo</button></div>
+    <p class="count" style="margin:0">Se aplican a toda la app y se guardan para <b id="setWho"></b>.</p>
+    <h3>Voz</h3>
+    <div class="set-group">
+      <label class="set-row" for="sRate"><span>Velocidad de la voz</span><span class="ctl"><input type="range" id="sRate" min="0.5" max="1.2" step="0.1"><output id="sRateOut">0.8×</output></span></label>
+      <div class="set-row"><span>Comprobar el sonido</span><button class="chip" id="sTest">Probar voz</button></div>
+    </div>
+    <h3>Escuchar y repetir</h3>
+    <div class="set-group">
+      <label class="set-row" for="sGap"><span>Tiempo para repetir</span><select id="sGap"><option value="0">Sin pausa</option><option value="1.5">Corto</option><option value="2.5">Normal</option><option value="4">Largo</option></select></label>
+      <label class="set-row" for="sReps"><span>Veces que suena cada una</span><select id="sReps"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label>
+      <label class="set-row" for="sReveal"><span>Mostrar el significado</span><select id="sReveal"><option value="before">Desde el principio</option><option value="after">Después de repetir</option></select></label>
+    </div>
+    <h3>Hablar y conversar</h3>
+    <div class="set-group">
+      <div class="set-row col"><span>Exigencia para aprobar</span><div class="segc" id="sPass"></div><small>Nota mínima para avanzar en Hablar y en Conversar.</small></div>
+    </div>
+    <h3>Persona</h3>
+    <div class="set-group">
+      <div class="set-row"><span id="setWho2"></span><button class="chip" id="setSwitch">Cambiar de persona</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="whoSheet" hidden role="dialog" aria-modal="true" aria-labelledby="whoTitle">
+  <div class="sheet-in">
+    <div class="sheet-head"><h2 id="whoTitle">¿Quién va a practicar?</h2><button class="btn ghost" id="whoClose">Cerrar</button></div>
+    <p class="count" style="margin:0">Cada persona tiene sus propios puntos, su racha, su plan del día y sus ajustes en este dispositivo.</p>
+    <div class="who-list" id="whoList"></div>
+    <form class="who-add" id="whoForm"><input id="whoInput" maxlength="16" placeholder="Nombre (por ejemplo, Papá)" autocomplete="off" aria-label="Nombre de la persona"><button class="btn" type="submit">Añadir</button></form>
+  </div>
+</div>
 <div class="toast" id="toast" aria-hidden="true"></div>
 
 <div class="player" id="player" hidden role="region" aria-label="Reproducción automática">
@@ -827,7 +909,12 @@ const isHan=c=>/\p{Script=Han}/u.test(c);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const VH=Object.fromEntries(V.map(w=>[w.h,w]));
 const lessonName=l=>l===0?"Lo básico":"Lección "+l;
-const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const rawGet=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+const rawSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const PROF=rawGet("g:profiles",[]);
+let ME=rawGet("g:current",null);if(!PROF.some(p=>p.id===ME))ME=PROF[0]?PROF[0].id:null;
+const pk=k=>(ME||"_nadie")+":"+k;
+const store={get(k,d){return rawGet(pk(k),d)},set(k,v){if(ME)rawSet(pk(k),v)}};
 function fillSpk(root=document){root.querySelectorAll("button.spk:empty").forEach(b=>b.innerHTML=SPK)}
 
 /* ===== fechas, puntos, racha y plan del día ===== */
@@ -851,7 +938,14 @@ function bump(k,n=1){if(DAY.day!==today())DAY={day:today(),cards:0,test:0,speak:
 let zhVoice=null;
 function pickVoice(){try{const v=speechSynthesis.getVoices();zhVoice=v.find(x=>/zh[-_]CN/i.test(x.lang))||v.find(x=>/^zh/i.test(x.lang))||null;$("#voiceNote").hidden=!!zhVoice||v.length===0}catch(e){$("#voiceNote").hidden=false}}
 try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice;setTimeout(()=>{try{if(!speechSynthesis.getVoices().length)$("#voiceNote").hidden=false}catch(e){}},2500)}catch(e){$("#voiceNote").hidden=false}
-const S=Object.assign({rate:.8,gap:2.5,reps:2,reveal:"after"},store.get("hsk1-audio",{}));
+const S=Object.assign({rate:.8,gap:2.5,reps:2,reveal:"after",pass:"normal"},store.get("hsk1-audio",{}));
+const PASS={facil:{t:"Fácil",k:50,c:45},normal:{t:"Normal",k:70,c:60},dificil:{t:"Difícil",k:85,c:80}};
+const passK=()=>(PASS[S.pass]||PASS.normal).k,passC=()=>(PASS[S.pass]||PASS.normal).c;
+function renderPass(){["#sPass","#kPass","#cvPass"].forEach(sel=>{const el=$(sel);if(!el)return;
+  el.innerHTML=Object.entries(PASS).map(([k,p])=>`<button data-pass="${k}" aria-pressed="${S.pass===k}">${p.t}<small>nota ${sel==="#cvPass"?p.c:p.k}</small></button>`).join("")})}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-pass]");if(!b)return;S.pass=b.dataset.pass;store.set("hsk1-audio",S);renderPass()});
+function openSheet(sel){$(sel).hidden=false;document.body.classList.add("locked")}
+function closeSheet(sel){$(sel).hidden=true;if($("#setSheet").hidden&&$("#whoSheet").hidden)document.body.classList.remove("locked")}
 function initSettings(){
   const r=$("#sRate"),g=$("#sGap"),n=$("#sReps"),v=$("#sReveal");
   r.value=S.rate;g.value=String(S.gap);n.value=String(S.reps);v.value=S.reveal;
@@ -859,7 +953,12 @@ function initSettings(){
   const save=()=>store.set("hsk1-audio",S);
   r.oninput=()=>{S.rate=+r.value;out();save()};g.onchange=()=>{S.gap=+g.value;save()};n.onchange=()=>{S.reps=+n.value;save()};v.onchange=()=>{S.reveal=v.value;save()};
   $("#sTest").onclick=()=>say("你好，很高兴认识你。");
-  $("#audioBtn").onclick=()=>{const p=$("#audioSet");p.hidden=!p.hidden;$("#audioBtn").setAttribute("aria-expanded",!p.hidden)};
+  renderPass();
+  const open=()=>{$("#setWho").textContent=myName();$("#setWho2").textContent=myName();openSheet("#setSheet")};
+  $("#setBtn").onclick=open;$("#homeSet").onclick=open;
+  $("#setDone").onclick=()=>closeSheet("#setSheet");
+  $("#setSheet").onclick=e=>{if(e.target.id==="setSheet")closeSheet("#setSheet")};
+  $("#setSwitch").onclick=()=>{closeSheet("#setSheet");openWho()};
 }
 const clean=t=>String(t).replace(/[—…\/]/g,"，");
 function speak(text,rate){return new Promise(res=>{let done=false,to;const fin=()=>{if(!done){done=true;clearTimeout(to);res()}};
@@ -960,6 +1059,10 @@ function renderHome(){
   $("#hStats").innerHTML=`<div class="stat"><b>${PT.last===today()||PT.last===yesterday()?PT.streak:0}</b><span>días seguidos</span></div><div class="stat"><b>${PT.day===today()?PT.today:0}</b><span>puntos hoy</span></div><div class="stat"><b>${knownN}/${V.length}</b><span>palabras sabidas</span></div>`;
   $("#homeTip").innerHTML=knownN<15?`¿Empiezas? Mira primero <a id="tipBasic">Lo básico</a>: las personas (yo, tú, él…), los verbos clave (tener, querer, necesitar…) y un constructor de frases.`:`Truco: en <a id="tipBasic">Lo básico</a> puedes construir frases nuevas combinando persona + verbo + cosa, y luego decirlas en voz alta.`;
   $("#tipBasic").onclick=()=>goPanel("basic");
+  $("#helloName").textContent=ME?myName():"";
+  const rk=$("#homeRank");rk.hidden=PROF.length<2;
+  if(PROF.length>1){const t=today(),rows=PROF.map(p=>{const v=rawGet(p.id+":hsk1-pts",{});return{p,total:v.total||0,hoy:v.day===t?(v.today||0):0}}).sort((a,b)=>b.total-a.total);
+    rk.innerHTML=`<h3>Puntos en este dispositivo</h3><ol>${rows.map((r,i)=>`<li><span class="pos">${i+1}</span><span class="av sm c${r.p.c%5}">${esc(initial(r.p.name))}</span><span class="nm">${esc(r.p.name)}${r.p.id===ME?" (tú)":""}<small>hoy ${r.hoy}</small></span><span class="pt">${r.total}</span></li>`).join("")}</ol>`}
 }
 $("#plan").onclick=e=>{const b=e.target.closest("[data-step]");if(b)PLAN[+b.dataset.step].go()};
 
@@ -1175,7 +1278,7 @@ function kShow(){
 function kResult(score,diff,heard){
   const it=K.items[K.i];K.done=true;clearTimeout(K.timer);K.scores[K.i]=Math.max(score,K.scores[K.i]??0);
   if(!K.aw[K.i]){K.aw[K.i]=1;addPts(score/10);bump("speak")}
-  const ok=score>=70;
+  const ok=score>=passK();
   $("#kHeard").innerHTML=`He entendido: <span class="han">${esc(heard)}</span>`;
   $("#kScore").textContent=score;$("#kScore").className="k-score "+(ok?"ok":score>=40?"mid":"no");
   $("#kLab").textContent=score>=90?"¡Excelente!":ok?"¡Bien!":score>=40?"Casi. Escucha y dilo otra vez":"Otra vez: escucha el modelo";
@@ -1194,11 +1297,11 @@ $("#kSpk").onclick=()=>{const it=K.items[K.i];if(it)speak(it.h)};
 toggle($("#kMem"),v=>{K.mem=v});
 $("#kGo").onclick=()=>kStart();$("#kAgain").onclick=()=>kStart();
 function kSummary(){
-  const a=kAvg(),n=K.scores.filter(x=>x!=null).length;const weak=K.items.filter((_,i)=>(K.scores[i]??0)<70);
+  const a=kAvg(),n=K.scores.filter(x=>x!=null).length;const weak=K.items.filter((_,i)=>(K.scores[i]??0)<passK());
   $("#kStage").hidden=true;$("#kEnd").hidden=false;
   $("#kEndScore").textContent=a==null?"–":a;$("#kEndScore").className="k-score "+(a>=70?"ok":a>=40?"mid":"no");
   $("#kEndTxt").textContent=`Nota media en ${n} de ${K.items.length} ejercicios.`;
-  $("#kWeak").innerHTML=weak.map(w=>`<li><span class="han" style="font-size:20px">${w.h}</span> · ${esc(w.py||"")} · ${esc(w.e)}</li>`).join("")||"<li>Nada. Todo por encima de 70.</li>";
+  $("#kWeak").innerHTML=weak.map(w=>`<li><span class="han" style="font-size:20px">${w.h}</span> · ${esc(w.py||"")} · ${esc(w.e)}</li>`).join("")||"<li>Nada. Todo aprobado.</li>";
   $("#kRetry").hidden=!weak.length;$("#kRetry").onclick=()=>kStart(weak);
 }
 
@@ -1392,7 +1495,7 @@ function cvAnswer(cands){
   const c=CONV[CV.i],st=c.steps[CV.step];let best=null;
   for(const cand of cands)for(const a of st.a){const sc=altScore(cand,a);if(sc!=null&&(!best||sc>best.sc))best={sc,a,cand}}
   if(!best){$("#cvStatus").textContent="He oído algo, pero no en chino. Prueba otra vez.";return}
-  const me=cvBubble(best.cand,true);const ok=best.sc>=60;
+  const me=cvBubble(best.cand,true);const ok=best.sc>=passC();
   const chip=document.createElement("span");chip.className="score-chip "+(ok?"ok":"no");chip.textContent=(ok?"✓ ":"")+best.sc+(ok?"":" · casi");me.append(chip);
   CV.tries++;
   if(ok){
@@ -1468,10 +1571,51 @@ $("#gChoices").innerHTML=gBtns();
 $("#pList").innerHTML=P.map(g=>`<h3>${g.t}</h3><div class="tbl"><table><tbody>${g.rows.map(r=>`<tr><td><span class="han">${r[0]}</span><div class="py">${r[1]}</div></td><td>${esc(r[2])}<div>${enHTML(r[0])}</div></td><td style="width:48px"><button class="spk" data-say="${esc(r[0])}" aria-label="Escuchar"></button></td></tr>`).join("")}</tbody></table></div>`).join("");
 $("#pPlay").onclick=()=>startPlayer(P.flatMap(g=>g.rows.map(r=>({h:r[0],pyHTML:esc(r[1]),e:r[2],who:g.t}))),"Frases");
 
+
+/* ===== perfiles ===== */
+const LEGACY=["hsk1-pts","hsk1-day","hsk1-known","hsk1-cvbest","hsk1-sub","hsk1-panel","hsk1-audio"];
+const initial=n=>(Array.from(String(n).trim())[0]||"?").toUpperCase();
+const myName=()=>{const p=PROF.find(x=>x.id===ME);return p?p.name:""};
+let delArm=null;
+function saveProfiles(){rawSet("g:profiles",PROF)}
+function useProfile(id){rawSet("g:current",id);location.reload()}
+function addProfile(name){
+  name=name.trim().slice(0,16);if(!name)return;
+  const id="p"+Date.now().toString(36),first=!PROF.length,used=new Set(PROF.map(p=>p.c));
+  let c=0;while(used.has(c)&&c<4)c++;
+  PROF.push({id,name,c});saveProfiles();
+  if(first)LEGACY.forEach(k=>{try{const v=localStorage.getItem(k);if(v!=null)localStorage.setItem(id+":"+k,v)}catch(e){}});
+  useProfile(id);
+}
+function delProfile(id){
+  try{Object.keys(localStorage).filter(k=>k.startsWith(id+":")).forEach(k=>localStorage.removeItem(k))}catch(e){}
+  const i=PROF.findIndex(p=>p.id===id);if(i>=0)PROF.splice(i,1);saveProfiles();
+  if(id===ME){if(PROF.length)useProfile(PROF[0].id);else{rawSet("g:current",null);location.reload()}}else renderWho();
+}
+function renderWho(){
+  const t=today();
+  $("#whoList").innerHTML=PROF.length?PROF.map(p=>{const v=rawGet(p.id+":hsk1-pts",{}),tot=v.total||0,me=p.id===ME;
+    return `<div class="who-row${me?" me":""}"><span class="av c${p.c%5}">${esc(initial(p.name))}</span><div><b>${esc(p.name)}</b><small>${tot} puntos · nivel ${Math.floor(tot/LVL)+1}${v.day===t&&v.today?` · hoy ${v.today}`:""}</small></div>
+    <div class="who-acts">${me?'<span class="count">Ahora</span>':`<button class="btn" data-use="${p.id}">Entrar</button>`}<button class="chip" data-del="${p.id}">${delArm===p.id?"¿Seguro? Borrar":"Borrar"}</button></div></div>`}).join(""):'<p class="lead" style="margin:0">Escribe tu nombre para empezar. Luego puedes añadir a más personas.</p>';
+}
+function openWho(){delArm=null;renderWho();$("#whoClose").hidden=!ME;openSheet("#whoSheet");if(!PROF.length)setTimeout(()=>{try{$("#whoInput").focus()}catch(e){}},100)}
+$("#whoList").onclick=e=>{const u=e.target.closest("[data-use]");if(u)return useProfile(u.dataset.use);
+  const d=e.target.closest("[data-del]");if(!d)return;const id=d.dataset.del;if(delArm===id){delProfile(id)}else{delArm=id;renderWho()}};
+$("#whoForm").addEventListener("submit",e=>{e.preventDefault();addProfile($("#whoInput").value)});
+$("#whoBtn").onclick=openWho;$("#whoClose").onclick=()=>closeSheet("#whoSheet");
+$("#whoSheet").onclick=e=>{if(e.target.id==="whoSheet"&&ME)closeSheet("#whoSheet")};
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("#setSheet").hidden)closeSheet("#setSheet");else if(!$("#whoSheet").hidden&&ME)closeSheet("#whoSheet")});
+function initProfiles(){
+  const p=PROF.find(x=>x.id===ME);
+  if(p){$("#whoName").textContent=p.name;const a=$("#whoAv");a.textContent=initial(p.name);a.className="av sm c"+(p.c%5)}
+  else openWho();
+}
+
 /* ===== inicio de la app ===== */
 initSettings();renderPts();renderBasic();renderDlg();fillSpk();
 $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
+initProfiles();
 </script>
 </body>
 </html>

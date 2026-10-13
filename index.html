@@ -377,9 +377,9 @@ button.stat:hover,.pts:hover{border-color:var(--accent)}
 .tiles .stat{cursor:default;min-width:0}
 .bars{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;align-items:end;height:150px;padding-top:18px;border-bottom:1px solid var(--line)}
 .bar-col{border:0;background:none;padding:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;position:relative;min-width:0}
-.bar{width:min(100%,16px);background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
-.bar.zero{background:var(--line)}
-.bar-col.sel .bar{background:var(--gold)}
+.cbar{width:min(100%,16px);background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
+.cbar.zero{background:var(--line)}
+.bar-col.sel .cbar{background:var(--gold)}
 .bar-v{position:absolute;font-size:11px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;transform:translateY(-16px)}
 .bar-lbls{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;font-size:10.5px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;margin-top:4px}
 .bar-lbls .td{color:var(--ink);font-weight:700}
@@ -1707,7 +1707,7 @@ function openStats(){
   const vals=days.map(d=>HIST[dstr(d)]||0),mx=Math.max(10,...vals),top=vals.indexOf(Math.max(...vals));
   const ti=13;
   const bars=days.map((d,i)=>{const v=vals[i],h=Math.round(v/mx*100);const lab=`${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]}: ${v} puntos`;
-    return `<button class="bar-col" data-tip="${esc(lab)}" aria-label="${esc(lab)}">${(i===ti||i===top)&&v?`<span class="bar-v" style="bottom:${h}%">${v}</span>`:""}<span class="bar${v?"":" zero"}" style="height:${v?Math.max(h,3):0}%"></span></button>`}).join("");
+    return `<button class="bar-col" data-tip="${esc(lab)}" aria-label="${esc(lab)}">${(i===ti||i===top)&&v?`<span class="bar-v" style="bottom:${h}%">${v}</span>`:""}<span class="cbar${v?"":" zero"}" style="height:${v?Math.max(h,3):0}%"></span></button>`}).join("");
   const lbls=days.map((d,i)=>`<span class="${i===ti?"td":""}">${i===ti?"hoy":d.getDate()}</span>`).join("");
   const week=vals.slice(7).reduce((a,b)=>a+b,0);
   const ach=[["Tests terminados",ST.tests||0],["Tests perfectos",ST.perfect||0],["Frases aprobadas",ST.speakOk||0],["Frases con 90 o más",ST.speakGold||0],["Caracteres escritos",ST.chars||0],["Conversaciones",ST.convs||0],["Planes del día completos",ST.plans||0],["Tonos acertados",ST.tones||0]];
@@ -1746,7 +1746,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();
-const APP_VER="2026-10-13.4";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.5";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

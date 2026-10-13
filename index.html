@@ -490,6 +490,16 @@ header.top{min-width:0}
 .fc-actions,.bar{min-width:0}
 .sel{min-width:0;max-width:100%;flex-wrap:wrap}
 .sel select{max-width:100%;min-width:0}
+.login{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px 14px;margin-top:10px}
+.login label{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:14px}
+.login label small{font-weight:400;color:var(--muted)}
+.login input{font:inherit;font-size:18px;font-weight:400;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.login input:focus{outline:3px solid var(--accent);outline-offset:1px}
+.lg-msg{min-height:20px;font-size:14px;font-weight:600}
+.lg-msg.err{color:var(--bad)}.lg-msg.ok{color:var(--ok)}
+.who-btn{position:relative}
+.sync-dot{position:absolute;left:24px;top:2px;width:10px;height:10px;border-radius:50%;border:2px solid var(--surface);background:var(--muted)}
+.sync-dot.ok{background:var(--ok)}.sync-dot.busy{background:var(--gold)}.sync-dot.err{background:var(--bad)}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -500,7 +510,7 @@ header.top{min-width:0}
     <h1><span class="han">学中文</span>Mi chino HSK 1</h1>
     <div class="top-right">
       <button class="pts" id="ptsBtn" aria-label="Ver mis puntos, racha y medallas"><b id="ptTotal">0</b><span id="ptLevel">puntos</span></button>
-      <button class="who-btn" id="whoBtn" aria-label="Cambiar de persona"><span class="av sm c0" id="whoAv"></span><span id="whoName">¿Quién?</span></button>
+      <button class="who-btn" id="whoBtn" aria-label="Cambiar de persona"><span class="av sm c0" id="whoAv"></span><span id="whoName">¿Quién?</span><span class="sync-dot" id="syncDot" hidden></span></button>
       <button class="iconbtn" id="setBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
     </div>
   </header>
@@ -844,9 +854,20 @@ header.top{min-width:0}
 <div class="sheet" id="whoSheet" hidden role="dialog" aria-modal="true" aria-labelledby="whoTitle">
   <div class="sheet-in">
     <div class="sheet-head"><h2 id="whoTitle">¿Quién va a practicar?</h2><button class="btn ghost" id="whoClose">Cerrar</button></div>
-    <p class="count" style="margin:0">Cada persona tiene sus propios puntos, su racha, su plan del día y sus ajustes en este dispositivo.</p>
+    <p class="count" style="margin:0">Entra con tu teléfono y un PIN de 4 cifras: tus puntos, rachas y medallas se guardan en internet y los tienes igual en el móvil y en la tablet.</p>
     <div class="who-list" id="whoList"></div>
-    <form class="who-add" id="whoForm"><input id="whoInput" maxlength="16" placeholder="Nombre (por ejemplo, Papá)" autocomplete="off" aria-label="Nombre de la persona"><button class="btn" type="submit">Añadir</button></form>
+    <form class="login" id="loginForm" autocomplete="on">
+      <h3 style="margin-top:6px">Entrar o crear cuenta</h3>
+      <label for="lgPhone">Teléfono<input id="lgPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="612 345 678" required></label>
+      <label for="lgPin">PIN de 4 cifras<input id="lgPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="current-password" placeholder="••••" required></label>
+      <label for="lgName">Nombre <small>(solo la primera vez)</small><input id="lgName" maxlength="16" autocomplete="nickname" placeholder="Por ejemplo, Mati"></label>
+      <div class="lg-msg" id="lgMsg" aria-live="polite"></div>
+      <button class="btn big" type="submit" id="lgBtn">Entrar</button>
+      <p class="count" style="margin:0">Si ya tenías progreso en este dispositivo con el mismo nombre, se une a tu cuenta. El PIN no se puede recuperar: apúntalo.</p>
+    </form>
+    <details class="note" style="margin-top:12px"><summary>Usar sin teléfono (solo en este dispositivo)</summary>
+      <form class="who-add" id="whoForm"><input id="whoInput" maxlength="16" placeholder="Nombre" autocomplete="off" aria-label="Nombre de la persona"><button class="btn" type="submit">Añadir</button></form>
+    </details>
   </div>
 </div>
 
@@ -1064,7 +1085,7 @@ const rawSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const PROF=rawGet("g:profiles",[]);
 let ME=rawGet("g:current",null);if(!PROF.some(p=>p.id===ME))ME=PROF[0]?PROF[0].id:null;
 const pk=k=>(ME||"_nadie")+":"+k;
-const store={get(k,d){return rawGet(pk(k),d)},set(k,v){if(ME)rawSet(pk(k),v)}};
+const store={get(k,d){return rawGet(pk(k),d)},set(k,v){if(ME){rawSet(pk(k),v);if(typeof syncSoon==="function")syncSoon(k)}}};
 function fillSpk(root=document){root.querySelectorAll("button.spk:empty").forEach(b=>b.innerHTML=SPK)}
 
 /* ===== fechas, puntos, racha y plan del día ===== */
@@ -1727,6 +1748,91 @@ $("#pList").innerHTML=P.map(g=>`<h3>${g.t}</h3><div class="tbl"><table><tbody>${
 $("#pPlay").onclick=()=>startPlayer(P.flatMap(g=>g.rows.map(r=>({h:r[0],pyHTML:esc(r[1]),e:r[2],who:g.t}))),"Frases");
 
 
+
+/* ===== cuentas y sincronización ===== */
+const CLOUD={url:"https://oteoodpkhnudcagfcbjm.supabase.co",key:"sb_publishable_4J0NDIBiP2tPsZbm-soWyQ_FSGGfm48"};
+const SYNC_KEYS=["hsk1-pts","hsk1-hist","hsk1-stats","hsk1-known","hsk1-medals","hsk1-cvbest","hsk1-book","hsk1-day","hsk1-audio"];
+async function rpc(fn,body){
+  const go=h=>fetch(`${CLOUD.url}/rest/v1/rpc/${fn}`,{method:"POST",headers:h,body:JSON.stringify(body)});
+  let r=await go({apikey:CLOUD.key,Authorization:"Bearer "+CLOUD.key,"Content-Type":"application/json"});
+  if(r.status===401)r=await go({apikey:CLOUD.key,"Content-Type":"application/json"});
+  if(!r.ok)throw new Error("http "+r.status);return r.json()}
+function normPhone(p){let d=String(p).replace(/\D/g,"");if(d.startsWith("00"))d=d.slice(2);if(d.length===9)d="34"+d;return d}
+async function phoneId(p){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("mi-chino:"+normPhone(p)));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+function localData(pid){const o={};for(const k of SYNC_KEYS){const v=rawGet(pid+":"+k,undefined);if(v!==undefined)o[k]=v}return o}
+function writeData(pid,o){for(const k of SYNC_KEYS)if(o&&o[k]!==undefined)rawSet(pid+":"+k,o[k])}
+const mx=(a,b)=>Math.max(+a||0,+b||0);
+function mergeData(a,b){
+  a=a||{};b=b||{};const o={};
+  const pa=a["hsk1-pts"]||{},pb=b["hsk1-pts"]||{};
+  if(a["hsk1-pts"]||b["hsk1-pts"]){const lt=(pa.last||"")>=(pb.last||"")?pa:pb,dy=(pa.day||"")>=(pb.day||"")?pa:pb;
+    o["hsk1-pts"]={total:mx(pa.total,pb.total),best:mx(pa.best,pb.best),streak:lt.streak||0,last:lt.last||"",day:dy.day||"",today:pa.day===pb.day?mx(pa.today,pb.today):(dy.today||0)}}
+  const ha=a["hsk1-hist"]||{},hb=b["hsk1-hist"]||{};o["hsk1-hist"]={};for(const k of new Set([...Object.keys(ha),...Object.keys(hb)]))o["hsk1-hist"][k]=mx(ha[k],hb[k]);
+  const sa=a["hsk1-stats"]||{},sb=b["hsk1-stats"]||{};o["hsk1-stats"]={};
+  for(const k of new Set([...Object.keys(sa),...Object.keys(sb)]))o["hsk1-stats"][k]=Array.isArray(sa[k])||Array.isArray(sb[k])?[...new Set([...(sa[k]||[]),...(sb[k]||[])])]:mx(sa[k],sb[k]);
+  o["hsk1-known"]=[...new Set([...(a["hsk1-known"]||[]),...(b["hsk1-known"]||[])])];
+  o["hsk1-medals"]=[...new Set([...(a["hsk1-medals"]||[]),...(b["hsk1-medals"]||[])])];
+  const ca=a["hsk1-cvbest"]||{},cb=b["hsk1-cvbest"]||{};o["hsk1-cvbest"]={};for(const k of new Set([...Object.keys(ca),...Object.keys(cb)]))o["hsk1-cvbest"][k]=mx(ca[k],cb[k]);
+  const ba=a["hsk1-book"],bb=b["hsk1-book"];
+  if(ba||bb){const x=ba||{},y=bb||{},cn={};for(const k of new Set([...Object.keys(x.cnt||{}),...Object.keys(y.cnt||{})]))cn[k]=mx((x.cnt||{})[k],(y.cnt||{})[k]);
+    o["hsk1-book"]={mode:x.mode||y.mode||"free",L:mx(x.L,y.L)||1,done:Object.assign({},y.done||{},x.done||{}),cnt:cn}}
+  const da=a["hsk1-day"],db=b["hsk1-day"];
+  if(da||db){const x=da||{},y=db||{};if(x.day&&x.day===y.day){const d={day:x.day};for(const k of new Set([...Object.keys(x),...Object.keys(y)]))if(k!=="day")d[k]=mx(x[k],y[k]);o["hsk1-day"]=d}else o["hsk1-day"]=(x.day||"")>=(y.day||"")?x:y}
+  if(a["hsk1-audio"]||b["hsk1-audio"])o["hsk1-audio"]=a["hsk1-audio"]||b["hsk1-audio"];
+  return o}
+const meProf=()=>PROF.find(x=>x.id===ME);
+function setSync(st,txt){const d=$("#syncDot");if(!d)return;const p=meProf();d.hidden=!(p&&p.cloud);d.className="sync-dot "+st;d.title=txt||""}
+let syncT=null,syncing=false,syncAgain=false;
+function syncSoon(k){const p=meProf();if(!p||!p.cloud||!SYNC_KEYS.includes(k))return;clearTimeout(syncT);syncT=setTimeout(()=>syncNow(false),4000)}
+async function syncNow(reloadIfChanged){
+  const p=meProf();if(!p||!p.cloud)return;
+  if(syncing){syncAgain=true;return}syncing=true;setSync("busy","Sincronizando…");
+  try{
+    const r=await rpc("cargar_progreso",{p_id:p.cloud.id,p_pin:p.cloud.pin});
+    if(r.estado==="pin_incorrecto"){setSync("err","El PIN de esta cuenta ha cambiado. Vuelve a entrar.");return}
+    const local=localData(ME),merged=r.estado==="ok"?mergeData(local,r.data||{}):mergeData(local,{});
+    const changed=JSON.stringify(mergeData(local,{}))!==JSON.stringify(merged);
+    writeData(ME,merged);
+    const w=await rpc("guardar_progreso",{p_id:p.cloud.id,p_pin:p.cloud.pin,p_nombre:p.name,p_data:merged});
+    if(!w||w.estado!=="ok")throw new Error(w&&w.estado);
+    setSync("ok","Guardado en internet");
+    if(changed&&reloadIfChanged){let last=0;try{last=+sessionStorage.getItem("hsk1-rl")||0}catch(e){}
+      if(Date.now()-last>15000){try{sessionStorage.setItem("hsk1-rl",Date.now())}catch(e){}location.reload()}}
+  }catch(e){setSync("err","Sin conexión: se guardará cuando vuelva internet")}
+  finally{syncing=false;if(syncAgain){syncAgain=false;syncSoon("hsk1-pts")}}
+}
+function startSync(){
+  setSync("busy");syncNow(true);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(syncT);syncNow(false)}else syncNow(true)});
+  window.addEventListener("online",()=>syncNow(true));
+}
+function lgMsg(t,cls){const m=$("#lgMsg");m.textContent=t;m.className="lg-msg "+(cls||"")}
+$("#loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const phone=$("#lgPhone").value,pin=$("#lgPin").value.trim(),name=$("#lgName").value.trim().slice(0,16);
+  if(normPhone(phone).length<9)return lgMsg("Escribe el número de teléfono completo.","err");
+  if(!/^\d{4}$/.test(pin))return lgMsg("El PIN tiene que tener 4 números.","err");
+  const btn=$("#lgBtn");btn.disabled=true;lgMsg("Conectando…");
+  try{
+    const id=await phoneId(phone),cloud={id,pin,tail:normPhone(phone).slice(-2)};
+    const r=await rpc("cargar_progreso",{p_id:id,p_pin:pin});
+    if(r.estado==="pin_incorrecto"){lgMsg("Ese teléfono ya tiene cuenta y el PIN no coincide.","err");return}
+    let prof=PROF.find(x=>x.cloud&&x.cloud.id===id);
+    const nm=(r.estado==="ok"&&r.nombre)||name;
+    if(!prof&&nm)prof=PROF.find(x=>!x.cloud&&x.name.trim().toLowerCase()===nm.toLowerCase());
+    if(r.estado==="nuevo"&&!prof&&!name){lgMsg("Es la primera vez con este teléfono: escribe tu nombre para crear la cuenta.","err");$("#lgName").focus();return}
+    const remote=r.estado==="ok"?(r.data||{}):{};
+    if(prof){prof.cloud=cloud;if(r.estado==="ok"&&r.nombre)prof.name=r.nombre;saveProfiles();
+      const merged=mergeData(localData(prof.id),remote);writeData(prof.id,merged);
+      await rpc("guardar_progreso",{p_id:id,p_pin:pin,p_nombre:prof.name,p_data:merged});
+      lgMsg(r.estado==="ok"?"¡Hola de nuevo! Progreso recuperado.":"Cuenta creada con tu progreso.","ok");setTimeout(()=>useProfile(prof.id),500)}
+    else{const data=mergeData({},remote);
+      if(r.estado==="nuevo")await rpc("guardar_progreso",{p_id:id,p_pin:pin,p_nombre:name,p_data:data});
+      lgMsg(r.estado==="ok"?"¡Hola de nuevo! Progreso recuperado.":"Cuenta creada.","ok");setTimeout(()=>addProfile(nm||name,cloud,data),500)}
+  }catch(err){lgMsg("No hay conexión con internet. Inténtalo de nuevo en un momento.","err")}
+  finally{btn.disabled=false}
+});
+
 /* ===== perfiles ===== */
 const LEGACY=["hsk1-pts","hsk1-day","hsk1-known","hsk1-cvbest","hsk1-sub","hsk1-panel","hsk1-audio"];
 const initial=n=>(Array.from(String(n).trim())[0]||"?").toUpperCase();
@@ -1734,12 +1840,13 @@ const myName=()=>{const p=PROF.find(x=>x.id===ME);return p?p.name:""};
 let delArm=null;
 function saveProfiles(){rawSet("g:profiles",PROF)}
 function useProfile(id){rawSet("g:current",id);location.reload()}
-function addProfile(name){
+function addProfile(name,cloud,data){
   name=name.trim().slice(0,16);if(!name)return;
   const id="p"+Date.now().toString(36),first=!PROF.length,used=new Set(PROF.map(p=>p.c));
   let c=0;while(used.has(c)&&c<4)c++;
-  PROF.push({id,name,c});saveProfiles();
+  PROF.push(cloud?{id,name,c,cloud}:{id,name,c});saveProfiles();
   if(first)LEGACY.forEach(k=>{try{const v=localStorage.getItem(k);if(v!=null)localStorage.setItem(id+":"+k,v)}catch(e){}});
+  if(data)writeData(id,data);
   useProfile(id);
 }
 function delProfile(id){
@@ -1750,8 +1857,8 @@ function delProfile(id){
 function renderWho(){
   const t=today();
   $("#whoList").innerHTML=PROF.length?PROF.map(p=>{const v=rawGet(p.id+":hsk1-pts",{}),tot=v.total||0,me=p.id===ME;
-    return `<div class="who-row${me?" me":""}"><span class="av c${p.c%5}">${esc(initial(p.name))}</span><div><b>${esc(p.name)}</b><small>${tot} puntos · nivel ${Math.floor(tot/LVL)+1}${v.day===t&&v.today?` · hoy ${v.today}`:""}</small></div>
-    <div class="who-acts">${me?'<span class="count">Ahora</span>':`<button class="btn" data-use="${p.id}">Entrar</button>`}<button class="chip" data-del="${p.id}">${delArm===p.id?"¿Seguro? Borrar":"Borrar"}</button></div></div>`}).join(""):'<p class="lead" style="margin:0">Escribe tu nombre para empezar. Luego puedes añadir a más personas.</p>';
+    return `<div class="who-row${me?" me":""}"><span class="av c${p.c%5}">${esc(initial(p.name))}</span><div><b>${esc(p.name)}</b><small>${p.cloud?`Teléfono ••${esc(p.cloud.tail)} · `:"Solo este dispositivo · "}${tot} puntos · nivel ${Math.floor(tot/LVL)+1}${v.day===t&&v.today?` · hoy ${v.today}`:""}</small></div>
+    <div class="who-acts">${me?'<span class="count">Ahora</span>':`<button class="btn" data-use="${p.id}">Entrar</button>`}<button class="chip" data-del="${p.id}">${delArm===p.id?"¿Seguro? Borrar":"Borrar"}</button></div></div>`}).join(""):'<p class="lead" style="margin:0">Todavía no hay nadie en este dispositivo. Entra con tu teléfono para empezar.</p>';
 }
 function openWho(){delArm=null;renderWho();$("#whoClose").hidden=!ME;openSheet("#whoSheet");if(!PROF.length)setTimeout(()=>{try{$("#whoInput").focus()}catch(e){}},100)}
 $("#whoList").onclick=e=>{const u=e.target.closest("[data-use]");if(u)return useProfile(u.dataset.use);
@@ -1969,8 +2076,8 @@ initSettings();renderPts();renderBasic();renderDlg();fillSpk();wireDlgMics();
 $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
-medalsReady=true;checkMedals();
-const APP_VER="2026-10-13.9";$("#verTxt").textContent="Versión "+APP_VER;
+medalsReady=true;checkMedals();startSync();
+const APP_VER="2026-10-13.10";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

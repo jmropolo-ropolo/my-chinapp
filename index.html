@@ -17,7 +17,7 @@
 /* Layout: app de una columna pensada para el móvil; barra inferior con 4 secciones (Inicio, Aprender, Practicar, Conversar), subpestañas arriba, tarjetas grandes de caracteres con colores de tono */
 :root{
   --bg:#f3f6f4; --surface:#ffffff; --surface-2:#e8eeeb; --line:#d3ddd8;
-  --ink:#16201c; --muted:#5b6b64; --accent:#1d6b57; --accent-ink:#ffffff; --av-ink:#ffffff; --m1:#a8662f; --m2:#7f8b97; --m3:#c99a06; --m4:#1f8f6a; --gold:#b7791f;
+  --ink:#16201c; --muted:#5b6b64; --accent:#1d6b57; --accent-ink:#ffffff; --av-ink:#ffffff; --m1:#a8662f; --a-cards:#2459b8; --a-test:#a86a00; --a-speak:#c8312b; --a-write:#2f8a3a; --a-chat:#7547c2; --a-learn:#1d6b57; --m2:#7f8b97; --m3:#c99a06; --m4:#1f8f6a; --gold:#b7791f;
   --t1:#c8312b; --t2:#c27a00; --t3:#2f8a3a; --t4:#2459b8; --t5:#7a8781;
   --ok:#2f8a3a; --bad:#c8312b;
   --f-han:"Noto Serif SC","Songti SC","SimSun",serif;
@@ -26,12 +26,12 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#111715; --surface:#19211e; --surface-2:#222c28; --line:#2f3b36;
-  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --av-ink:#0d1a15; --gold:#f0b43c;
+  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --av-ink:#0d1a15; --a-cards:#78a6ff; --a-test:#f0b43c; --a-speak:#ff6b63; --a-write:#6fcf74; --a-chat:#b69cff; --a-learn:#5cc2a3; --gold:#f0b43c;
   --t1:#ff6b63; --t2:#f0b43c; --t3:#6fcf74; --t4:#78a6ff; --t5:#8d9a94;
   --ok:#6fcf74; --bad:#ff6b63; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111715; --surface:#19211e; --surface-2:#222c28; --line:#2f3b36;
-  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --av-ink:#0d1a15; --gold:#f0b43c;
+  --ink:#e6eeea; --muted:#9aaba3; --accent:#5cc2a3; --accent-ink:#0d1a15; --av-ink:#0d1a15; --a-cards:#78a6ff; --a-test:#f0b43c; --a-speak:#ff6b63; --a-write:#6fcf74; --a-chat:#b69cff; --a-learn:#5cc2a3; --gold:#f0b43c;
   --t1:#ff6b63; --t2:#f0b43c; --t3:#6fcf74; --t4:#78a6ff; --t5:#8d9a94;
   --ok:#6fcf74; --bad:#ff6b63; color-scheme:dark}
 *{box-sizing:border-box}
@@ -420,6 +420,49 @@ button.stat:hover,.pts:hover{border-color:var(--accent)}
 .lesson small{color:var(--muted);margin-top:4px}
 .lesson .mini{margin-top:8px}
 .done-all{background:color-mix(in srgb,var(--ok) 12%,var(--surface));border:1px solid var(--ok);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-weight:600}
+/* diseño más visual */
+.ic-cards{--a:var(--a-cards)}.ic-test,.ic-idea{--a:var(--a-test)}.ic-mic{--a:var(--a-speak)}.ic-pen{--a:var(--a-write)}.ic-chat,.ic-dialog{--a:var(--a-chat)}.ic-listen,.ic-learn,.ic-wave{--a:var(--a-learn)}
+.step .n{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--a,var(--muted)) 15%,var(--surface));color:var(--a,var(--muted))}
+.step{grid-template-columns:42px minmax(0,1fr) auto}
+.step .n svg{width:22px;height:22px}
+.step.next .n{background:var(--a,var(--accent));color:var(--surface)}
+.step.done .n{background:var(--ok);color:var(--accent-ink)}
+.step.next{border-color:var(--a,var(--accent));box-shadow:0 0 0 1px var(--a,var(--accent)),0 8px 20px -14px var(--a,var(--accent))}
+.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 18%,var(--surface)),var(--surface) 70%);border:1px solid var(--line);border-radius:22px;padding:18px 16px 14px;margin-bottom:14px}
+.hero>*{position:relative;z-index:1}
+.hero::after{content:"学";position:absolute;left:-24px;bottom:-70px;font-family:var(--f-han);font-size:190px;line-height:1;color:var(--accent);opacity:.07;pointer-events:none}
+.hero .stats{grid-column:1/-1}
+.hero .stat{flex:1;min-width:0;background:var(--surface)}
+.ring{display:flex;flex-direction:column;align-items:center;gap:2px}
+.ring svg{width:96px;height:96px}
+.ring small{font-size:11.5px;color:var(--muted);text-align:center}
+.stat i{display:block;margin-bottom:2px}
+.stat i svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.st-fire i{color:var(--a-speak)}.st-star i{color:var(--gold)}.st-medal i{color:var(--a-chat)}
+h2.hh{display:flex;align-items:center;gap:12px}
+.hico{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:0 0 auto;background:color-mix(in srgb,var(--a) 16%,var(--surface));color:var(--a)}
+.hico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.subnav button svg{width:16px;height:16px;vertical-align:-3px;margin-right:5px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:4px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line)}
+.dots i.ok{background:var(--ok);border-color:var(--ok)}.dots i.no{background:var(--bad);border-color:var(--bad)}
+.dots i.cur{background:var(--surface);border:2px solid var(--a-test);transform:scale(1.25)}
+.qimg{width:150px;height:150px;border-radius:28px;display:grid;place-items:center;background:color-mix(in srgb,var(--a-test) 12%,var(--surface));border:1px solid var(--line)}
+.q-prompt .qimg .pic{width:110px;height:110px}
+.hint-es{font-family:var(--f-disp);font-size:22px;font-weight:700;color:var(--a-test)}
+.fb{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;border-radius:12px;padding:6px 12px}
+.fb:empty{padding:0}
+.fb.ok{background:color-mix(in srgb,var(--ok) 13%,var(--surface))}.fb.no{background:color-mix(in srgb,var(--bad) 11%,var(--surface))}
+.fb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.choice{box-shadow:0 2px 0 var(--line);font-weight:600}
+.choice:active{transform:translateY(1px);box-shadow:none}
+.choice.ok{box-shadow:0 0 0 2px var(--ok)}.choice.no{box-shadow:0 0 0 2px var(--bad)}
+.grid .word{align-items:center;text-align:center;padding-top:14px}
+.grid .word .pic{width:64px;height:64px;padding:6px;border-radius:18px;background:color-mix(in srgb,var(--accent) 9%,var(--surface));box-sizing:content-box}
+.grid.sm .word .pic{width:44px;height:44px;padding:5px;border-radius:14px}
+.cv-card{position:relative;padding-left:72px;min-height:96px;justify-content:center}
+.cv-av{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-han);font-size:24px;background:color-mix(in srgb,var(--a-chat) 15%,var(--surface));color:var(--a-chat)}
+.lesson{background:linear-gradient(135deg,color-mix(in srgb,var(--a-learn) 14%,var(--surface)),var(--surface) 75%)}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -443,8 +486,9 @@ button.stat:hover,.pts:hover{border-color:var(--accent)}
 
   <!-- INICIO -->
   <section id="home" class="panel">
-    <div class="hello">
+    <div class="hello hero">
       <div><div class="big-han">你好！</div><div class="hello-name" id="helloName"></div><p class="lead" id="homeLead" style="margin:6px 0 0">Tu plan de hoy: cinco pasos cortos, unos 15 minutos.</p></div>
+      <div class="ring" id="hRing"></div>
       <div class="stats" id="hStats"></div>
     </div>
     <div class="pass-bar"><span class="sel">Cómo estudiar</span><div class="segc" id="modeSeg"></div></div>
@@ -1103,7 +1147,7 @@ function goPanel(id){
   if(id!=="speak"){K.run++;clearTimeout(K.timer)}if(id!=="conv")CV.run++;if(id==="conv"&&$("#cvRoom").hidden)renderCvList();
   document.querySelectorAll("#bnav button").forEach(b=>b.toggleAttribute("aria-current",false)||b.dataset.g===g&&b.setAttribute("aria-current","page"));
   const sn=$("#subnav"),list=GROUPS[g];sn.hidden=list.length<2;
-  sn.innerHTML=list.map(([p,t])=>`<button role="tab" data-p="${p}" aria-selected="${p===id}">${t}</button>`).join("");
+  sn.innerHTML=list.map(([p,t])=>`<button role="tab" data-p="${p}" aria-selected="${p===id}">${typeof PANEL_IC!=="undefined"&&PANEL_IC[p]?ICON[PANEL_IC[p][0]]:""}${t}</button>`).join("");
   document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!==id);
   if(id==="home")renderHome();if(id==="vocab")renderVocab();if(id==="cards"&&!deck.length)buildDeck();if(id==="test"&&!tq&&!tDone)newTest();
   window.scrollTo(0,0);
@@ -1129,12 +1173,12 @@ function renderHome(){
   if(DAY.day!==today())DAY={day:today(),cards:0,test:0,speak:0,write:0,chat:0};
   let next=-1;
   $("#plan").innerHTML=PLAN.map((s,i)=>{const v=Math.min(DAY[s.k]||0,s.goal),done=v>=s.goal;if(!done&&next<0)next=i;
-    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n">${done?ICON.check:ICON[PLAN_IC[s.k]]}</span><div><b>${s.t}</b><span class="sub">${s.w} · ${v} de ${s.goal}</span><div class="mini"><i style="width:${v/s.goal*100}%"></i></div></div><button class="btn ${!done&&next===i?"":"ghost"}" data-step="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
+    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n ic-${PLAN_IC[s.k]}">${done?ICON.check:ICON[PLAN_IC[s.k]]}</span><div><b>${s.t}</b><span class="sub">${s.w} · ${v} de ${s.goal}</span><div class="mini"><i style="width:${v/s.goal*100}%"></i></div></div><button class="btn ${!done&&next===i?"":"ghost"}" data-step="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
   const go=$("#homeGo");
   if(next<0){go.textContent="¡Plan de hoy completado! Conversa un poco más";go.onclick=()=>goPanel("conv")}
   else{go.textContent=`Continuar: ${PLAN[next].t.toLowerCase()}`;go.onclick=PLAN[next].go}
   const knownN=V.filter(w=>known.has(w.id)).length;
-  $("#hStats").innerHTML=`<button class="stat" data-stats><b>${curStreak()}</b><span>días seguidos</span></button><button class="stat" data-stats><b>${PT.day===today()?PT.today:0}</b><span>puntos hoy</span></button><button class="stat" data-stats><b>${earned.length}/${MEDALS.length}</b><span>medallas</span></button>`;
+  $("#hStats").innerHTML=`<button class="stat st-fire" data-stats><i>${ICON.fire}</i><b>${curStreak()}</b><span>días seguidos</span></button><button class="stat st-star" data-stats><i>${ICON.star}</i><b>${PT.day===today()?PT.today:0}</b><span>puntos hoy</span></button><button class="stat st-medal" data-stats><i>${ICON.medal}</i><b>${earned.length}/${MEDALS.length}</b><span>medallas</span></button>`;
   $("#homeTip").innerHTML=knownN<15?`¿Empiezas? Mira primero <a id="tipBasic">Lo básico</a>: las personas (yo, tú, él…), los verbos clave (tener, querer, necesitar…) y un constructor de frases.`:`Truco: en <a id="tipBasic">Lo básico</a> puedes construir frases nuevas combinando persona + verbo + cosa, y luego decirlas en voz alta.`;
   $("#tipBasic").onclick=()=>goPanel("basic");
   $("#helloName").textContent=ME?myName():"";
@@ -1263,16 +1307,16 @@ $("#cAuto").onclick=()=>{if(!deck.length)buildDeck();startPlayer(deck.map(wordIt
 
 /* ===== test ===== */
 const tState={v:"all"};const TT={types:new Set(["listen","py","es","img"]),han:false};
-let tq=null,tList=[],tIdx=0,tOk=0,tAns=false,tCombo=0,tPts=0,tDone=false;
+let tRes=[],tq=null,tList=[],tIdx=0,tOk=0,tAns=false,tCombo=0,tPts=0,tDone=false;
 const IMGN={};for(const w of V)if(IMG[w.h])IMGN[IMG[w.h]]=(IMGN[IMG[w.h]]||0)+1;
 const imgUnique=w=>IMG[w.h]&&IMGN[IMG[w.h]]===1;
 lessonFilter($("#tFilters"),tState,newTest);
 $("#tTypes").querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>{const t=b.dataset.type;const on=b.getAttribute("aria-pressed")==="true";if(on&&TT.types.size===1)return;on?TT.types.delete(t):TT.types.add(t);b.setAttribute("aria-pressed",!on);newTest()});
 toggle($("#tHan"),v=>{TT.han=v;if(tq&&!tAns)showQ()});
-function newTest(){tList=shuffle(V.filter(w=>inLesson(w,tState.v))).slice(0,10);tIdx=0;tOk=0;tCombo=0;tPts=0;tDone=false;showQ()}
+function newTest(){tRes=[];tList=shuffle(V.filter(w=>inLesson(w,tState.v))).slice(0,10);tIdx=0;tOk=0;tCombo=0;tPts=0;tDone=false;showQ()}
 const meaningOpt=o=>`<button class="choice" data-id="${o.id}">${imgTag(o.h)}<span>${esc(o.e)}</span>${enHTML(o.h)}</button>`;
 const pinyinOpt=o=>`<button class="choice" data-id="${o.id}"><span class="py">${pyHTML(o.py)}</span>${TT.han?`<span class="han">${o.h}</span>`:""}</button>`;
-function tScoreLine(){$("#tScore").innerHTML=`Pregunta ${tIdx+1} de ${tList.length} · ${tOk} aciertos${tCombo>=2?` · <span class="combo">racha ×${tCombo}</span>`:""}`}
+function tScoreLine(){$("#tScore").innerHTML=`<div class="dots">${tList.map((_,i)=>`<i class="${i<tIdx||(i===tIdx&&tRes[i]!=null)?(tRes[i]?"ok":"no"):i===tIdx?"cur":""}"></i>`).join("")}</div>Pregunta ${tIdx+1} de ${tList.length} · ${tOk} aciertos${tCombo>=2?` · <span class="combo">racha ×${tCombo}</span>`:""}`}
 function showQ(){
   tAns=false;$("#tFb").textContent="";$("#tFb").className="fb";
   if(tIdx>=tList.length){tq=null;if(!tDone){tDone=true;bump("test");if(tState.v===BK.L&&tOk>=7)bkDone("test");stat("tests");if(tList.length>=10&&tOk===tList.length)stat("perfect")}$("#tScore").textContent="";
@@ -1280,24 +1324,25 @@ function showQ(){
     $("#tChoices").innerHTML="";$("#tNext").textContent="Otro test";$("#tNext").onclick=newTest;return}
   $("#tNext").textContent="Siguiente";$("#tNext").onclick=()=>{tIdx++;showQ()};
   const w=tList[tIdx];
-  let types=[...TT.types];if(!imgUnique(w))types=types.filter(t=>t!=="img");if(!types.length)types=["py"];
+  let types=[...TT.types];if(!imgOk(w))types=types.filter(t=>t!=="img");if(!types.length)types=["py"];
   const type=pick(types);
   let pool=V.filter(x=>x.id!==w.id&&x.e!==w.e&&pyPlain(x.py)!==pyPlain(w.py));
-  if(type==="img")pool=pool.filter(imgUnique);
+  if(type==="img")pool=pool.filter(imgOk);
   const opts=shuffle([w,...shuffle(pool).slice(0,3)]);
   tq={w,type};tScoreLine();
   const han=TT.han?`<div class="big han">${hanHTML(w)}</div>`:"";
   if(type==="listen"){$("#tQ").innerHTML=`<div class="lead" style="margin:0">Escucha y elige qué significa</div><button class="spk big" id="tPlay" aria-label="Escuchar otra vez"></button>${han}`;$("#tChoices").innerHTML=opts.map(meaningOpt).join("");speak(w.h)}
   else if(type==="py"){$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Qué significa?</div><div class="qpy">${pyHTML(w.py)}</div>${han}<button class="spk" id="tPlay" aria-label="Escuchar"></button>`;$("#tChoices").innerHTML=opts.map(meaningOpt).join("")}
-  else if(type==="es"){$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Cómo se dice en chino?</div>${imgTag(w.h)}<div class="qe">${esc(w.e)}</div>${enHTML(w.h)}`;$("#tChoices").innerHTML=opts.map(pinyinOpt).join("")}
-  else{$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Cómo se dice esto?</div>${imgTag(w.h)}`;$("#tChoices").innerHTML=opts.map(pinyinOpt).join("")}
+  else if(type==="es"){$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Cómo se dice en chino?</div>${IMG[w.h]?`<div class="qimg">${imgTag(w.h)}</div>`:""}<div class="qe">${esc(w.e)}</div>${enHTML(w.h)}`;$("#tChoices").innerHTML=opts.map(pinyinOpt).join("")}
+  else{$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Cómo se dice esto en chino?</div><div class="qimg">${imgTag(w.h)}</div><button class="chip" id="tHint">Pista: verlo en español</button><div class="hint-es" id="tHintTxt" hidden>${esc(w.e)}</div>`;$("#tChoices").innerHTML=opts.map(pinyinOpt).join("")}
+  const th=$("#tHint");if(th)th.onclick=()=>{$("#tHintTxt").hidden=false;th.hidden=true};
   const tp=$("#tPlay");if(tp){tp.innerHTML=SPK;tp.onclick=()=>speak(w.h)}
 }
 $("#tChoices").onclick=e=>{const b=e.target.closest(".choice");if(!b||tAns||!tq)return;tAns=true;const w=tq.w;const ok=+b.dataset.id===w.id;
   $("#tChoices").querySelectorAll(".choice").forEach(c=>{if(+c.dataset.id===w.id)c.classList.add("ok");else if(c===b)c.classList.add("no")});
-  if(ok){tOk++;tCombo++;const p=10+(tCombo>=3?5:0);tPts+=p;addPts(p)}else tCombo=0;
+  tRes[tIdx]=ok;if(ok){tOk++;tCombo++;const p=10+(tCombo>=3?5:0);tPts+=p;addPts(p)}else tCombo=0;
   $("#tFb").className="fb "+(ok?"ok":"no");
-  $("#tFb").innerHTML=`${ok?(tCombo>=3?`¡Correcto! Racha ×${tCombo}`:"¡Correcto!"):"Era:"} ${pyHTML(w.py)}${TT.han?` <span class="han">${w.h}</span>`:""} · ${esc(w.e)}`;
+  $("#tFb").innerHTML=`${ok?ICON.check:ICON.cross}${ok?(tCombo>=3?`¡Correcto! Racha ×${tCombo}`:"¡Correcto!"):"Era:"} ${pyHTML(w.py)}${TT.han?` <span class="han">${w.h}</span>`:""} · ${esc(w.e)}`;
   speak(w.h);tScoreLine()};
 
 /* ===== hablar ===== */
@@ -1539,7 +1584,7 @@ const CV={i:-1,step:0,run:0,scores:[],review:[],pts:0,tries:0};
 const cvBest=store.get("hsk1-cvbest",{});
 function renderCvList(){
   $("#conv").classList.remove("inroom");$("#cvList").hidden=false;$("#cvSum").hidden=true;$("#cvRoom").hidden=true;
-  $("#cvList").innerHTML=CONV.map((c,i)=>`<button class="cv-card" data-c="${i}"><b>${esc(c.t)}</b><span><span class="han">${c.who[0]}</span> · ${esc(c.desc)}</span><small>${c.steps.length} turnos${cvBest[i]!=null?` · <span class="best">mejor nota ${cvBest[i]}</span>`:""}</small></button>`).join("");
+  $("#cvList").innerHTML=CONV.map((c,i)=>`<button class="cv-card" data-c="${i}"><span class="cv-av">${c.who[0].slice(-1)}</span><b>${esc(c.t)}</b><span><span class="han">${c.who[0]}</span> · ${esc(c.desc)}</span><small>${c.steps.length} turnos${cvBest[i]!=null?` · <span class="best">mejor nota ${cvBest[i]}</span>`:""}</small></button>`).join("");
 }
 $("#cvList").onclick=e=>{const b=e.target.closest("[data-c]");if(b)cvStart(+b.dataset.c)};
 toggle($("#cvPy"),v=>$("#cvChat").classList.toggle("hide-cvpy",!v));
@@ -1704,7 +1749,12 @@ const ICON={
  listen:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.5"/>',
  dialog:'<circle cx="8" cy="8.5" r="3"/><circle cx="16.5" cy="8.5" r="3"/><path d="M2.5 19.5a5.5 5.5 0 0 1 11 0"/><path d="M13.5 14.6a5.5 5.5 0 0 1 8 4.9"/>',
  idea:'<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.1 2.2h5c0-.9.5-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>',
- check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>'};
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+ cross:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+ fire:'<path d="M12 3c1 3.5 5.5 5.6 5.5 10.2a5.5 5.5 0 0 1-11 0c0-2.3 1.1-3.9 2.4-5.1.2 1.7 1 2.8 2.4 3.3C10.9 8.6 11.4 5.6 12 3z"/>',
+ star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
+ medal:'<path d="M8 3h3l2 5H10z"/><path d="M16 3h-3l-2 5h3z"/><circle cx="12" cy="14.5" r="6"/><path d="M12 12v5"/>',
+ wave:'<path d="M3 12c1.5-4 3-4 4.5 0s3 4 4.5 0 3-4 4.5 0 3 4 4.5 0"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
 for(const k in ICON)if(!ICON[k].startsWith("<svg"))ICON[k]=svgI(k);
 const PLAN_IC={cards:"cards",test:"test",speak:"mic",write:"pen",chat:"chat"};
@@ -1748,7 +1798,7 @@ function renderBook(){
   let next=-1;
   $("#plan").innerHTML=steps.map((s,i)=>{const done=bkIsDone(b.L,s.k);if(!done&&next<0)next=i;const c=BK.cnt[b.L+":"+s.k]||0;
     const sub=done?"Hecho":s.goal?`${Math.min(c,s.goal)} de ${s.goal}`:"Pendiente";
-    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n">${done?ICON.check:ICON[s.ic]}</span><div><b>${esc(s.t)}</b><span class="sub">${sub}</span>${s.goal&&!done?`<div class="mini"><i style="width:${Math.min(c,s.goal)/s.goal*100}%"></i></div>`:""}</div><button class="btn ${!done&&next===i?"":"ghost"}" data-bks="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
+    return `<li class="step${done?" done":""}${!done&&next===i?" next":""}"><span class="n ic-${s.ic}">${done?ICON.check:ICON[s.ic]}</span><div><b>${esc(s.t)}</b><span class="sub">${sub}</span>${s.goal&&!done?`<div class="mini"><i style="width:${Math.min(c,s.goal)/s.goal*100}%"></i></div>`:""}</div><button class="btn ${!done&&next===i?"":"ghost"}" data-bks="${i}">${done?"Otra vez":"Ir"}</button></li>`}).join("");
   const go=$("#homeGo"),nb=BOOK.find(x=>x.L===b.L+1);
   if(next>=0){go.textContent=`Continuar: ${steps[next].t.charAt(0).toLowerCase()+steps[next].t.slice(1)}`;go.onclick=steps[next].go}
   else if(nb){go.textContent=`Pasar a la Lección ${nb.L}: ${nb.h}`;go.onclick=()=>{BK.L=nb.L;saveBK();renderHome();window.scrollTo(0,0)}}
@@ -1757,9 +1807,20 @@ function renderBook(){
   head.querySelectorAll("[data-bkl]").forEach(x=>x.onclick=()=>{BK.L=+x.dataset.bkl;saveBK();renderHome()});
 }
 const _renderHome=renderHome;
-renderHome=function(){_renderHome();renderMode();
+renderHome=function(){_renderHome();setTimeout(renderRing,0);renderMode();
   if(BK.mode==="book")renderBook();
   else{$("#bookHead").hidden=true;$("#homeLead").textContent="Tu plan de hoy: cinco pasos cortos, unos 15 minutos.";$("#plan").onclick=e=>{const b=e.target.closest("[data-step]");if(b)PLAN[+b.dataset.step].go()}}};
+
+
+/* ===== diseño visual ===== */
+const PICT=new Set(["茶","狗","猫","菜","杯子","鸡蛋","口","米饭","面包","饭店","商店","电脑","鸡","雨","椅子","牛奶","书","手机","出租车","嘴","水","家","学校","中国","法国","泰国","零","一","二","三","四","五","六","七","八","九","十","医生","老师","学生","游泳","旅游","春"]);
+const imgOk=w=>imgUnique(w)&&PICT.has(w.h);
+const PANEL_IC={basic:["idea"],vocab:["listen"],dlg:["dialog"],tones:["wave"],phr:["learn"],cards:["cards"],test:["test"],speak:["mic"],write:["pen"],conv:["chat"]};
+document.querySelectorAll(".panel").forEach(p=>{const ic=PANEL_IC[p.id];const h=p.querySelector("h2");if(!ic||!h)return;h.classList.add("hh");h.insertAdjacentHTML("afterbegin",`<span class="hico ic-${ic[0]}">${ICON[ic[0]]}</span>`)});
+function renderRing(){
+  const all=document.querySelectorAll("#plan .step").length,done=document.querySelectorAll("#plan .step.done").length,p=all?done/all:0,c=2*Math.PI*36;
+  $("#hRing").innerHTML=`<svg viewBox="0 0 88 88" role="img" aria-label="${done} de ${all} pasos hechos"><circle cx="44" cy="44" r="36" fill="none" stroke="var(--surface-2)" stroke-width="9"/><circle cx="44" cy="44" r="36" fill="none" stroke="${p>=1?"var(--ok)":"var(--accent)"}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c*(1-p)).toFixed(1)}" transform="rotate(-90 44 44)"/><text x="44" y="50" text-anchor="middle" font-size="19" font-weight="700" fill="var(--ink)" font-family="Source Sans 3,system-ui,sans-serif">${done}/${all}</text></svg><small>${BK.mode==="book"?"de la lección":"plan de hoy"}</small>`;
+}
 
 /* ===== logros y medallas ===== */
 const curStreak=()=>PT.last===today()||PT.last===yesterday()?PT.streak:0;
@@ -1840,7 +1901,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();
-const APP_VER="2026-10-13.6";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.7";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

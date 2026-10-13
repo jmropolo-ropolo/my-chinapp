@@ -519,6 +519,24 @@ header.top{min-width:0}
 .k-e{font-size:clamp(24px,6vw,34px)}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
+
+/* test compacto (v12) */
+.tset{margin:4px 0 10px}
+.tset summary{cursor:pointer;font-weight:600;color:var(--accent);padding:6px 0}
+.tset[open] summary{margin-bottom:6px}
+#test .game{gap:10px;padding:14px;scroll-margin-top:64px}
+#test .q-prompt{gap:6px}
+#test .q-prompt .qe{font-size:clamp(22px,5.5vw,30px)}
+#test .q-prompt .qpy{font-size:clamp(26px,7vw,38px)}
+#test .qimg{width:100px;height:100px;border-radius:22px}
+#test .q-prompt .qimg .pic,#test .q-prompt .pic{width:72px;height:72px}
+#test .q-prompt .lead{font-size:15px}
+#test .spk.big{width:64px;height:64px}
+#test .choices{gap:8px}
+#test .choice{padding:8px 10px;gap:2px;font-size:16px}
+#test .choice .pic{width:34px;height:34px}
+#test .choice .en{display:none}
+#test .choice .py{font-size:20px}
 </style>
 </head>
 <body>
@@ -699,7 +717,8 @@ header.top{min-width:0}
   <!-- TEST -->
   <section id="test" class="panel" hidden>
     <h2>Test</h2>
-    <p class="lead">Diez preguntas con audio, pinyin, español e imágenes, sin caracteres chinos. Cada acierto vale 10 puntos; con 3 seguidos ganas 5 más.</p>
+    <p class="lead">10 preguntas sin caracteres. Acierto = 10 pts; 3 seguidos = +5.</p>
+    <details class="tset"><summary>⚙ Opciones del test (lección y tipo de preguntas)</summary>
     <div class="bar" id="tFilters"></div>
     <div class="bar" id="tTypes">
       <button class="chip" data-type="listen" aria-pressed="true">Escuchar</button>
@@ -708,6 +727,7 @@ header.top{min-width:0}
       <button class="chip" data-type="img" aria-pressed="true">Imágenes</button>
       <button class="chip" id="tHan" aria-pressed="false">Mostrar caracteres</button>
     </div>
+    </details>
     <div class="game">
       <div class="score" id="tScore"></div>
       <div class="q-prompt" id="tQ"></div>
@@ -1405,6 +1425,7 @@ function showQ(){
   else if(type==="py"){$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Qué significa?</div><div class="qpy">${pyHTML(w.py)}</div>${han}<button class="spk" id="tPlay" aria-label="Escuchar"></button>`;$("#tChoices").innerHTML=opts.map(meaningOpt).join("")}
   else if(type==="es"){$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Cómo se dice en chino?</div>${IMG[w.h]?`<div class="qimg">${imgTag(w.h)}</div>`:""}<div class="qe">${esc(w.e)}</div>${enHTML(w.h)}`;$("#tChoices").innerHTML=opts.map(pinyinOpt).join("")}
   else{$("#tQ").innerHTML=`<div class="lead" style="margin:0">¿Cómo se dice esto en chino?</div><div class="qimg">${imgTag(w.h)}</div><button class="chip" id="tHint">Pista: verlo en español</button><div class="hint-es" id="tHintTxt" hidden>${esc(w.e)}</div>`;$("#tChoices").innerHTML=opts.map(pinyinOpt).join("")}
+  {const g=document.querySelector("#test .game");if(g&&g.getBoundingClientRect().top<60)g.scrollIntoView({block:"start"})}
   const th=$("#tHint");if(th)th.onclick=()=>{$("#tHintTxt").hidden=false;th.hidden=true};
   const tp=$("#tPlay");if(tp){tp.innerHTML=SPK;tp.onclick=()=>speak(w.h)}
 }
@@ -2012,7 +2033,7 @@ document.addEventListener("click",e=>{
 });
 const TL=[[1,"ā","1.º","alto y plano","M2 4h22"],[2,"á","2.º","sube","M2 11L24 3"],[3,"ǎ","3.º","baja y sube","M2 5Q9 14 13 12T24 4"],[4,"à","4.º","baja","M2 3L24 12"],[5,"a","neutro","corto y suave","M10 8h6"]];
 const legendHTML=()=>`<button class="tone-legend" data-go-tones aria-label="Los colores indican el tono. Abrir la explicación de los tonos"><span class="tl-t">Los colores indican el tono de cada sílaba<small>Ver tonos ›</small></span>${TL.map(([n,m,o,d,p])=>`<span class="tl t${n}" title="${o} tono: ${d}"><svg viewBox="0 0 26 14" aria-hidden="true"><path d="${p}"/></svg><b>${m}</b>${o}</span>`).join("")}</button>`;
-["vocab","cards","test","speak","write","basic"].forEach(id=>{const lead=document.querySelector("#"+id+" > .lead");if(lead)lead.insertAdjacentHTML("afterend",legendHTML())});
+["vocab","cards","write","basic"].forEach(id=>{const lead=document.querySelector("#"+id+" > .lead");if(lead)lead.insertAdjacentHTML("afterend",legendHTML())});
 applyRead();renderRead();
 
 /* ===== logros y medallas ===== */
@@ -2094,7 +2115,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();startSync();
-const APP_VER="2026-10-13.11";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.12";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

@@ -471,6 +471,18 @@ h2.hh{display:flex;align-items:center;gap:12px}
 .tb-live{font-size:18px;min-height:0;text-align:left}
 .tb-res{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:4px;font-size:14px;color:var(--muted)}
 .tb-res .han{color:var(--ink);font-size:17px}
+.wrap,.sheet-in,.pop-in{zoom:var(--z,1)}
+.sheet-in{max-height:calc(92vh / var(--z,1))}
+.sheet-head{position:sticky;top:-18px;z-index:3;background:var(--bg);padding-block:12px 8px;margin-top:-12px}
+.tone-legend{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:14px;cursor:pointer;font:inherit;color:var(--ink)}
+.tone-legend .tl-t{flex-basis:100%;font-weight:700;font-size:14px;display:flex;justify-content:space-between;gap:8px}
+.tone-legend .tl-t small{font-weight:600;color:var(--accent)}
+.tone-legend .tl{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:600;border-radius:999px;padding:3px 10px 3px 6px;background:color-mix(in srgb,currentColor 10%,var(--surface))}
+.tone-legend .tl b{font-size:18px}
+.tone-legend svg{width:26px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.notone .t1,.notone .t2,.notone .t3,.notone .t4,.notone .t5{color:inherit}
+.notone .tone-legend{display:none}
+.pts,.pts span{white-space:nowrap}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -506,7 +518,7 @@ h2.hh{display:flex;align-items:center;gap:12px}
     <div class="rank" id="homeRank" hidden></div>
     <div class="tip" id="homeTip"></div>
     <p class="ver" id="verTxt"></p>
-    <button class="tip set-card" id="homeSet"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span><b>Ajustes</b><br><span class="count">Velocidad de la voz, tiempo para repetir y exigencia para aprobar al hablar.</span></span></button>
+    <button class="tip set-card" id="homeSet"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span><b>Ajustes</b><br><span class="count">Tamaño de la letra, colores de los tonos, velocidad de la voz y exigencia para aprobar.</span></span></button>
   </section>
 
   <!-- LO BÁSICO -->
@@ -555,7 +567,7 @@ h2.hh{display:flex;align-items:center;gap:12px}
   <section id="vocab" class="panel" hidden>
     <h2>Vocabulario</h2>
     <p class="lead">Toca el altavoz para escuchar. Cada sílaba lleva el color de su tono.</p>
-    <div class="tonekey" aria-label="Colores de los tonos"><span class="t1"><b>ā</b> 1.º tono</span><span class="t2"><b>á</b> 2.º</span><span class="t3"><b>ǎ</b> 3.º</span><span class="t4"><b>à</b> 4.º</span><span class="t5"><b>a</b> neutro</span></div>
+    
     <div class="bar" id="vFilters"></div>
     <div class="bar"><button class="btn" id="vPlay">▶ Escuchar y repetir la lista</button><span class="count" id="vCount"></span></div>
     <div class="grid" id="vGrid"></div>
@@ -791,6 +803,11 @@ h2.hh{display:flex;align-items:center;gap:12px}
   <div class="sheet-in">
     <div class="sheet-head"><h2 id="setTitle">Ajustes</h2><button class="btn" id="setDone">Listo</button></div>
     <p class="count" style="margin:0">Se aplican a toda la app y se guardan para <b id="setWho"></b>.</p>
+    <h3>Lectura</h3>
+    <div class="set-group">
+      <div class="set-row col"><span>Tamaño de la letra</span><div class="segc" id="sSize"></div></div>
+      <div class="set-row col"><span>Colores según el tono</span><div class="segc" id="sTone"></div><small>Cada sílaba se pinta del color de su tono: rojo 1.º, naranja 2.º, verde 3.º, azul 4.º y gris el neutro.</small></div>
+    </div>
     <h3>Voz</h3>
     <div class="set-group">
       <label class="set-row" for="sRate"><span>Velocidad de la voz</span><span class="ctl"><input type="range" id="sRate" min="0.5" max="1.2" step="0.1"><output id="sRateOut">0.8×</output></span></label>
@@ -1068,7 +1085,7 @@ function bump(k,n=1){if(DAY.day!==today())DAY={day:today(),cards:0,test:0,speak:
 let zhVoice=null;
 function pickVoice(){try{const v=speechSynthesis.getVoices();zhVoice=v.find(x=>/zh[-_]CN/i.test(x.lang))||v.find(x=>/^zh/i.test(x.lang))||null;$("#voiceNote").hidden=!!zhVoice||v.length===0}catch(e){$("#voiceNote").hidden=false}}
 try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice;setTimeout(()=>{try{if(!speechSynthesis.getVoices().length)$("#voiceNote").hidden=false}catch(e){}},2500)}catch(e){$("#voiceNote").hidden=false}
-const S=Object.assign({rate:.8,gap:2.5,reps:2,reveal:"after",pass:"normal"},store.get("hsk1-audio",{}));
+const S=Object.assign({rate:.8,gap:2.5,reps:2,reveal:"after",pass:"normal",size:1,tonec:true},store.get("hsk1-audio",{}));
 const PASS={facil:{t:"Fácil",k:50,c:45},normal:{t:"Normal",k:70,c:60},dificil:{t:"Difícil",k:85,c:80}};
 const passK=()=>(PASS[S.pass]||PASS.normal).k,passC=()=>(PASS[S.pass]||PASS.normal).c;
 function renderPass(){["#sPass","#kPass","#cvPass"].forEach(sel=>{const el=$(sel);if(!el)return;
@@ -1849,6 +1866,24 @@ function wireDlgMics(){
   });
 }
 
+
+/* ===== lectura: tamaño de letra y colores de tono ===== */
+const SIZES=[[1,"Normal","15px"],[1.15,"Grande","17px"],[1.3,"Muy grande","19px"]];
+function applyRead(){document.body.style.setProperty("--z",S.size);document.body.classList.toggle("notone",!S.tonec)}
+function renderRead(){
+  $("#sSize").innerHTML=SIZES.map(([z,t,f])=>`<button data-size="${z}" aria-pressed="${+S.size===z}"><span style="font-size:${f}">Aa</span><small>${t}</small></button>`).join("");
+  $("#sTone").innerHTML=[[1,"Con colores"],[0,"Sin colores"]].map(([v,t])=>`<button data-tonec="${v}" aria-pressed="${!!S.tonec===!!v}">${t}</button>`).join("");
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-size]");if(a){S.size=+a.dataset.size;store.set("hsk1-audio",S);applyRead();renderRead();return}
+  const b=e.target.closest("[data-tonec]");if(b){S.tonec=b.dataset.tonec==="1";store.set("hsk1-audio",S);applyRead();renderRead();return}
+  if(e.target.closest("[data-go-tones]"))goPanel("tones");
+});
+const TL=[[1,"ā","1.º","alto y plano","M2 4h22"],[2,"á","2.º","sube","M2 11L24 3"],[3,"ǎ","3.º","baja y sube","M2 5Q9 14 13 12T24 4"],[4,"à","4.º","baja","M2 3L24 12"],[5,"a","neutro","corto y suave","M10 8h6"]];
+const legendHTML=()=>`<button class="tone-legend" data-go-tones aria-label="Los colores indican el tono. Abrir la explicación de los tonos"><span class="tl-t">Los colores indican el tono de cada sílaba<small>Ver tonos ›</small></span>${TL.map(([n,m,o,d,p])=>`<span class="tl t${n}" title="${o} tono: ${d}"><svg viewBox="0 0 26 14" aria-hidden="true"><path d="${p}"/></svg><b>${m}</b>${o}</span>`).join("")}</button>`;
+["vocab","cards","test","speak","write","basic"].forEach(id=>{const lead=document.querySelector("#"+id+" > .lead");if(lead)lead.insertAdjacentHTML("afterend",legendHTML())});
+applyRead();renderRead();
+
 /* ===== logros y medallas ===== */
 const curStreak=()=>PT.last===today()||PT.last===yesterday()?PT.streak:0;
 const TIER=[["Bronce","--m1"],["Plata","--m2"],["Oro","--m3"],["Jade","--m4"]];
@@ -1928,7 +1963,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();
-const APP_VER="2026-10-13.8";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.9";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

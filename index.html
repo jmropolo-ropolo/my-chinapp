@@ -500,6 +500,23 @@ header.top{min-width:0}
 .who-btn{position:relative}
 .sync-dot{position:absolute;left:24px;top:2px;width:10px;height:10px;border-radius:50%;border:2px solid var(--surface);background:var(--muted)}
 .sync-dot.ok{background:var(--ok)}.sync-dot.busy{background:var(--gold)}.sync-dot.err{background:var(--bad)}
+/* conversación: más peso al pinyin y al español */
+#cvChat .msg .mh{font-size:21px;line-height:1.35}
+#cvChat .msg.me .mh{font-size:19px}
+#cvChat .msg .mp{font-size:18px;font-weight:700;color:var(--accent)}
+#cvChat .msg .me-es{font-size:18px;font-weight:700;color:var(--ink)}
+#cvChat .msg .spk{width:32px;height:32px}
+#cvChat .msg{scroll-margin-top:70px;gap:4px}
+.turn{position:static;box-shadow:none;gap:8px;padding:12px}
+.turn .k-status{font-size:15px}
+.turn .opt{padding:6px 12px}
+.turn .opt b{font-size:17px}
+.turn .opt small{font-size:15px;color:var(--ink)}
+.turn .mic{width:72px;height:72px}.turn .mic svg{width:32px;height:32px}
+.turn .fc-actions{gap:6px}
+.k-h{font-size:clamp(32px,8vw,54px)}
+#kP{font-size:clamp(22px,6vw,32px);font-weight:700}
+.k-e{font-size:clamp(24px,6vw,34px)}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -1650,7 +1667,7 @@ function cvStart(i){CV.i=i;CV.step=0;CV.scores=[];CV.review=[];CV.pts=0;const c=
 function cvBubble(line,mine){const c=CONV[CV.i];const d=document.createElement("div");d.className="msg "+(mine?"me":"ai");
   if(mine)d.innerHTML=`<span class="who">Tú</span><span class="mh">${esc(line)}</span>`;
   else d.innerHTML=`<span class="who">${c.who[0]} · ${esc(c.who[1])}</span><span class="mh"><span>${esc(line[0])}</span><button class="spk" data-say="${esc(line[0])}" aria-label="Escuchar"></button></span><span class="mp">${esc(line[1])}</span><span class="me-es">${esc(line[2])}</span>`;
-  $("#cvChat").append(d);fillSpk(d);try{window.scrollTo({top:document.documentElement.scrollHeight})}catch(e){}return d}
+  $("#cvChat").append(d);fillSpk(d);try{d.scrollIntoView({block:"nearest"})}catch(e){}return d}
 const cvLock=on=>{$("#cvMic").disabled=on};
 async function cvStep(){
   const run=++CV.run,c=CONV[CV.i];CV.tries=0;
@@ -1660,7 +1677,7 @@ async function cvStep(){
   $("#cvStatus").textContent=`${c.who[0]} habla…`;
   cvBubble(st.p);await speak(st.p[0]);if(run!==CV.run)return;
   $("#cvOpts").innerHTML=st.a.map((a,i)=>`<button class="opt" data-say="${esc(a.ex||a.h.replace("*",""))}"><b>${esc(a.py)}</b><small>${esc(a.es)}</small></button>`).join("");
-  $("#cvStatus").textContent="Tu turno: mantén pulsado el micrófono y responde";cvLock(false);requestAnimationFrame(()=>window.scrollTo({top:document.documentElement.scrollHeight}));
+  $("#cvStatus").textContent="Tu turno: mantén pulsado el micrófono y responde";cvLock(false);requestAnimationFrame(()=>{const l=[...document.querySelectorAll("#cvChat .msg.ai")].pop();try{l&&l.scrollIntoView({block:"start"})}catch(e){}});
 }
 function altScore(cand,alt){
   if(alt.h.includes("*")){const fixed=normH(alt.h.replace("*","")),ih=normH(cand);if(!ih.length)return null;
@@ -2077,7 +2094,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();startSync();
-const APP_VER="2026-10-13.10";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-13.11";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

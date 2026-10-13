@@ -14,7 +14,7 @@
 /* Layout: app de una columna pensada para el móvil; barra inferior con 4 secciones (Inicio, Aprender, Practicar, Conversar), subpestañas arriba, tarjetas grandes de caracteres con colores de tono */
 :root{
   --bg:#f3f6f4; --surface:#ffffff; --surface-2:#e8eeeb; --line:#d3ddd8;
-  --ink:#16201c; --muted:#5b6b64; --accent:#1d6b57; --accent-ink:#ffffff; --av-ink:#ffffff; --gold:#b7791f;
+  --ink:#16201c; --muted:#5b6b64; --accent:#1d6b57; --accent-ink:#ffffff; --av-ink:#ffffff; --m1:#a8662f; --m2:#7f8b97; --m3:#c99a06; --m4:#1f8f6a; --gold:#b7791f;
   --t1:#c8312b; --t2:#c27a00; --t3:#2f8a3a; --t4:#2459b8; --t5:#7a8781;
   --ok:#2f8a3a; --bad:#c8312b;
   --f-han:"Noto Serif SC","Songti SC","SimSun",serif;
@@ -364,6 +364,43 @@ body.locked{overflow:hidden}
 .rank .pt{font-variant-numeric:tabular-nums;font-weight:700;color:var(--gold);font-family:var(--f-disp);font-size:18px}
 .pass-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
 .pass-bar .segc{flex:1;max-width:420px}
+/* logros */
+.pts{cursor:pointer;color:var(--ink);font:inherit}
+.stat{font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+button.stat:hover,.pts:hover{border-color:var(--accent)}
+.lv{display:flex;align-items:center;gap:12px;margin:10px 0 4px}
+.lv .av{width:48px;height:48px;font-size:20px}
+.lv b{font-family:var(--f-disp);font-size:22px;display:block}
+.lv-bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:6px}
+.lv-bar i{display:block;height:100%;background:var(--gold)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tiles .stat{cursor:default;min-width:0}
+.bars{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;align-items:end;height:150px;padding-top:18px;border-bottom:1px solid var(--line)}
+.bar-col{border:0;background:none;padding:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;position:relative;min-width:0}
+.bar{width:min(100%,16px);background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
+.bar.zero{background:var(--line)}
+.bar-col.sel .bar{background:var(--gold)}
+.bar-v{position:absolute;font-size:11px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;transform:translateY(-16px)}
+.bar-lbls{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px;font-size:10.5px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;margin-top:4px}
+.bar-lbls .td{color:var(--ink);font-weight:700}
+.bar-tip{min-height:22px;font-size:14px;color:var(--muted);margin-top:6px}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 16px}
+.acts div{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.acts b{font-variant-numeric:tabular-nums}
+.medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.medal{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 6px}
+.medal svg{width:52px;height:58px}
+.medal b{font-size:13px;line-height:1.2}
+.medal small{font-size:11.5px;color:var(--muted);line-height:1.25}
+.medal .mp{width:80%;height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:4px}
+.medal .mp i{display:block;height:100%;background:var(--accent)}
+.medal.off{background:transparent}
+.pop{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:color-mix(in srgb,var(--ink) 45%,transparent)}
+.pop-in{background:var(--bg);border-radius:20px;padding:22px 20px;max-width:340px;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.pop-in svg{width:110px;height:124px}
+.pop-in .k{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:700}
+.pop-in h2{margin:0}
+@media (prefers-reduced-motion:no-preference){.pop-in svg{animation:medalIn .6s cubic-bezier(.2,1.4,.4,1)}@keyframes medalIn{from{transform:scale(.4) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}}
 @media (max-width:520px){.line{grid-template-columns:1fr auto}.line .who{grid-column:1/-1;padding:0}.slot{grid-template-columns:1fr}.slot-l{padding-top:0}}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .25s}.fc:active{transform:scale(.98)}}
 </style>
@@ -373,7 +410,7 @@ body.locked{overflow:hidden}
   <header class="top">
     <h1><span class="han">学中文</span>Mi chino HSK 1</h1>
     <div class="top-right">
-      <div class="pts" aria-live="polite"><b id="ptTotal">0</b><span id="ptLevel">puntos</span></div>
+      <button class="pts" id="ptsBtn" aria-label="Ver mis puntos, racha y medallas"><b id="ptTotal">0</b><span id="ptLevel">puntos</span></button>
       <button class="who-btn" id="whoBtn" aria-label="Cambiar de persona"><span class="av sm c0" id="whoAv"></span><span id="whoName">¿Quién?</span></button>
       <button class="iconbtn" id="setBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
     </div>
@@ -710,6 +747,16 @@ body.locked{overflow:hidden}
     <form class="who-add" id="whoForm"><input id="whoInput" maxlength="16" placeholder="Nombre (por ejemplo, Papá)" autocomplete="off" aria-label="Nombre de la persona"><button class="btn" type="submit">Añadir</button></form>
   </div>
 </div>
+
+<div class="sheet" id="statsSheet" hidden role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+  <div class="sheet-in">
+    <div class="sheet-head"><h2 id="statsTitle">Mis logros</h2><button class="btn" id="statsClose">Cerrar</button></div>
+    <div id="statsBody"></div>
+  </div>
+</div>
+<div class="pop" id="medalPop" hidden role="dialog" aria-modal="true" aria-labelledby="popTitle">
+  <div class="pop-in" id="popIn"></div>
+</div>
 <div class="toast" id="toast" aria-hidden="true"></div>
 
 <div class="player" id="player" hidden role="region" aria-label="Reproducción automática">
@@ -921,7 +968,11 @@ function fillSpk(root=document){root.querySelectorAll("button.spk:empty").forEac
 const dstr=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const today=()=>dstr(new Date());
 const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dstr(d)};
-const PT=Object.assign({total:0,today:0,day:today(),streak:0,last:""},store.get("hsk1-pts",{}));
+const PT=Object.assign({total:0,today:0,day:today(),streak:0,last:"",best:0},store.get("hsk1-pts",{}));
+const HIST=store.get("hsk1-hist",{});
+if(PT.total&&!Object.keys(HIST).length&&PT.day&&PT.today)HIST[PT.day]=PT.today;
+const ST=store.get("hsk1-stats",{});
+function stat(k,n=1){ST[k]=(ST[k]||0)+n;store.set("hsk1-stats",ST);checkMedals()}
 if(PT.day!==today()){PT.day=today();PT.today=0}
 const LVL=250;
 function renderPts(){$("#ptTotal").textContent=PT.total;$("#ptLevel").textContent=`puntos · nivel ${Math.floor(PT.total/LVL)+1}`}
@@ -929,10 +980,10 @@ let toastT;
 function addPts(n){n=Math.round(n);if(!(n>0))return;const t=today();
   if(PT.day!==t){PT.day=t;PT.today=0}
   if(PT.last!==t){PT.streak=PT.last===yesterday()?PT.streak+1:1;PT.last=t}
-  PT.total+=n;PT.today+=n;store.set("hsk1-pts",PT);renderPts();
+  PT.total+=n;PT.today+=n;PT.best=Math.max(PT.best||0,PT.streak);HIST[t]=(HIST[t]||0)+n;store.set("hsk1-hist",HIST);store.set("hsk1-pts",PT);renderPts();checkMedals();
   const el=$("#toast");el.textContent=`+${n}`;el.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove("on"),1100)}
 let DAY=Object.assign({day:today(),cards:0,test:0,speak:0,write:0,chat:0},store.get("hsk1-day",{}));
-function bump(k,n=1){if(DAY.day!==today())DAY={day:today(),cards:0,test:0,speak:0,write:0,chat:0};DAY[k]=(DAY[k]||0)+n;store.set("hsk1-day",DAY);if(cur==="home")renderHome()}
+function bump(k,n=1){if(DAY.day!==today())DAY={day:today(),cards:0,test:0,speak:0,write:0,chat:0};DAY[k]=(DAY[k]||0)+n;store.set("hsk1-day",DAY);if(!DAY.full&&typeof PLAN!=="undefined"&&PLAN.every(p=>(DAY[p.k]||0)>=p.goal)){DAY.full=1;store.set("hsk1-day",DAY);stat("plans")}if(cur==="home")renderHome()}
 
 /* ===== voz y ajustes ===== */
 let zhVoice=null;
@@ -945,7 +996,7 @@ function renderPass(){["#sPass","#kPass","#cvPass"].forEach(sel=>{const el=$(sel
   el.innerHTML=Object.entries(PASS).map(([k,p])=>`<button data-pass="${k}" aria-pressed="${S.pass===k}">${p.t}<small>nota ${sel==="#cvPass"?p.c:p.k}</small></button>`).join("")})}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-pass]");if(!b)return;S.pass=b.dataset.pass;store.set("hsk1-audio",S);renderPass()});
 function openSheet(sel){$(sel).hidden=false;document.body.classList.add("locked")}
-function closeSheet(sel){$(sel).hidden=true;if($("#setSheet").hidden&&$("#whoSheet").hidden)document.body.classList.remove("locked")}
+function closeSheet(sel){$(sel).hidden=true;if($("#setSheet").hidden&&$("#whoSheet").hidden&&$("#statsSheet").hidden)document.body.classList.remove("locked")}
 function initSettings(){
   const r=$("#sRate"),g=$("#sGap"),n=$("#sReps"),v=$("#sReveal");
   r.value=S.rate;g.value=String(S.gap);n.value=String(S.reps);v.value=S.reveal;
@@ -1056,7 +1107,7 @@ function renderHome(){
   if(next<0){go.textContent="¡Plan de hoy completado! Conversa un poco más";go.onclick=()=>goPanel("conv")}
   else{go.textContent=`Continuar: ${PLAN[next].t.toLowerCase()}`;go.onclick=PLAN[next].go}
   const knownN=V.filter(w=>known.has(w.id)).length;
-  $("#hStats").innerHTML=`<div class="stat"><b>${PT.last===today()||PT.last===yesterday()?PT.streak:0}</b><span>días seguidos</span></div><div class="stat"><b>${PT.day===today()?PT.today:0}</b><span>puntos hoy</span></div><div class="stat"><b>${knownN}/${V.length}</b><span>palabras sabidas</span></div>`;
+  $("#hStats").innerHTML=`<button class="stat" data-stats><b>${curStreak()}</b><span>días seguidos</span></button><button class="stat" data-stats><b>${PT.day===today()?PT.today:0}</b><span>puntos hoy</span></button><button class="stat" data-stats><b>${earned.length}/${MEDALS.length}</b><span>medallas</span></button>`;
   $("#homeTip").innerHTML=knownN<15?`¿Empiezas? Mira primero <a id="tipBasic">Lo básico</a>: las personas (yo, tú, él…), los verbos clave (tener, querer, necesitar…) y un constructor de frases.`:`Truco: en <a id="tipBasic">Lo básico</a> puedes construir frases nuevas combinando persona + verbo + cosa, y luego decirlas en voz alta.`;
   $("#tipBasic").onclick=()=>goPanel("basic");
   $("#helloName").textContent=ME?myName():"";
@@ -1197,7 +1248,7 @@ const pinyinOpt=o=>`<button class="choice" data-id="${o.id}"><span class="py">${
 function tScoreLine(){$("#tScore").innerHTML=`Pregunta ${tIdx+1} de ${tList.length} · ${tOk} aciertos${tCombo>=2?` · <span class="combo">racha ×${tCombo}</span>`:""}`}
 function showQ(){
   tAns=false;$("#tFb").textContent="";$("#tFb").className="fb";
-  if(tIdx>=tList.length){tq=null;if(!tDone){tDone=true;bump("test")}$("#tScore").textContent="";
+  if(tIdx>=tList.length){tq=null;if(!tDone){tDone=true;bump("test");stat("tests");if(tList.length>=10&&tOk===tList.length)stat("perfect")}$("#tScore").textContent="";
     $("#tQ").innerHTML=`<div class="qe">${tOk} / ${tList.length}</div><div class="combo">+${tPts} puntos</div><div class="lead" style="margin:0">${tOk>=9?"¡Excelente!":tOk>=6?"Bien. Repasa en Tarjetas las que fallaste.":"Toca repasar: prueba las Tarjetas con «Solo las que no sé»."}</div>`;
     $("#tChoices").innerHTML="";$("#tNext").textContent="Otro test";$("#tNext").onclick=newTest;return}
   $("#tNext").textContent="Siguiente";$("#tNext").onclick=()=>{tIdx++;showQ()};
@@ -1277,7 +1328,7 @@ function kShow(){
 }
 function kResult(score,diff,heard){
   const it=K.items[K.i];K.done=true;clearTimeout(K.timer);K.scores[K.i]=Math.max(score,K.scores[K.i]??0);
-  if(!K.aw[K.i]){K.aw[K.i]=1;addPts(score/10);bump("speak")}
+  if(!K.aw[K.i]){K.aw[K.i]=1;addPts(score/10);bump("speak");if(score>=passK())stat("speakOk");if(score>=90)stat("speakGold")}
   const ok=score>=passK();
   $("#kHeard").innerHTML=`He entendido: <span class="han">${esc(heard)}</span>`;
   $("#kScore").textContent=score;$("#kScore").className="k-score "+(ok?"ok":score>=40?"mid":"no");
@@ -1342,7 +1393,7 @@ function wQuiz(){
     onComplete:()=>{const m=$("#wm"+W.ci);m.textContent=chars[W.ci];m.classList.add("done");W.ci++;setTimeout(wChar,600)}});
 }
 function wWordDone(){
-  const w=W.list[W.i];const score=Math.max(0,100-W.mist*12);W.sum+=score;const p=Math.round(score/10)+Array.from(w.h).length;W.pts+=p;addPts(p);bump("write");
+  const w=W.list[W.i];const score=Math.max(0,100-W.mist*12);W.sum+=score;const p=Math.round(score/10)+Array.from(w.h).length;W.pts+=p;addPts(p);bump("write");stat("chars",Array.from(w.h).length);
   $("#wFb").className="fb "+(score>=70?"ok":"no");$("#wFb").textContent=`${score>=90?"¡Perfecto!":score>=70?"¡Bien!":"Hecho, con algunos errores"} · ${W.mist} ${W.mist===1?"error":"errores"} · nota ${score}`;
   speak(w.h);setTimeout(()=>{W.i++;wShow()},1800);
 }
@@ -1522,7 +1573,7 @@ $("#cvSkip").onclick=()=>{const st=CONV[CV.i]?.steps[CV.step];if(!st)return;cons
 $("#cvExit").onclick=()=>{CV.run++;haltSpeech();renderCvList()};
 function cvEnd(){
   const c=CONV[CV.i],sc=c.steps.map((_,i)=>CV.scores[i]??0),avg=Math.round(sc.reduce((a,b)=>a+b,0)/sc.length);
-  cvBest[CV.i]=Math.max(avg,cvBest[CV.i]??0);store.set("hsk1-cvbest",cvBest);
+  cvBest[CV.i]=Math.max(avg,cvBest[CV.i]??0);store.set("hsk1-cvbest",cvBest);ST.convDone=[...new Set([...(ST.convDone||[]),CV.i])];if(avg>=90)ST.convGold=(ST.convGold||0)+1;stat("convs");
   $("#conv").classList.remove("inroom");$("#cvRoom").hidden=true;const s=$("#cvSum");s.hidden=false;
   s.innerHTML=`<div class="k-score ${avg>=70?"ok":avg>=40?"mid":"no"}">${avg}</div><div class="lead" style="margin:0">Nota media de «${esc(c.t)}» · +${CV.pts} puntos</div>
   ${CV.review.length?`<h3>Frases para repasar</h3><ul class="rules" style="text-align:left">${CV.review.map(r=>`<li><span class="han" style="font-size:20px">${esc(r.h)}</span> · ${esc(r.py)} · ${esc(r.e)}</li>`).join("")}</ul>`:"<p class='lead' style='margin:0'>¡Todo bien dicho!</p>"}
@@ -1562,7 +1613,7 @@ const gBtns=()=>[1,2,3,4].map(n=>`<button class="choice" data-t="${n}"><span cla
 function newG(){g=pick(GSETS);gDone=false;$("#gShow").textContent="?";$("#gFb").textContent="";$("#gFb").className="fb";$("#gChoices").innerHTML=gBtns();speak(g[1])}
 $("#gPlay").onclick=()=>{if(!g)newG();else speak(g[1])};
 $("#gNext").onclick=newG;
-$("#gChoices").onclick=e=>{const b=e.target.closest(".choice");if(!b||gDone||!g)return;gDone=true;gTot++;const right=tone(g[0]);const ok=+b.dataset.t===right;if(ok){gOk++;addPts(3)}
+$("#gChoices").onclick=e=>{const b=e.target.closest(".choice");if(!b||gDone||!g)return;gDone=true;gTot++;const right=tone(g[0]);const ok=+b.dataset.t===right;if(ok){gOk++;addPts(3);stat("tones")}
   $("#gChoices").querySelectorAll(".choice").forEach(c=>{if(+c.dataset.t===right)c.classList.add("ok");else if(c===b)c.classList.add("no")});
   $("#gShow").innerHTML=`<span class="t${right}">${g[1]}</span>`;$("#gFb").className="fb "+(ok?"ok":"no");$("#gFb").innerHTML=`${ok?"¡Correcto!":"Era el "+right+".º tono."} <span class="t${right}">${g[0]}</span>`;$("#gScore").textContent=`${gOk} aciertos de ${gTot}`};
 $("#gChoices").innerHTML=gBtns();
@@ -1611,11 +1662,85 @@ function initProfiles(){
   else openWho();
 }
 
+
+/* ===== logros y medallas ===== */
+const curStreak=()=>PT.last===today()||PT.last===yesterday()?PT.streak:0;
+const TIER=[["Bronce","--m1"],["Plata","--m2"],["Oro","--m3"],["Jade","--m4"]];
+const knownCount=()=>V.filter(w=>known.has(w.id)).length;
+const FAMS=[
+ {id:"pts",ch:"点",n:"Puntos",d:g=>`Consigue ${g} puntos`,v:()=>PT.total,g:[100,500,1000,2500]},
+ {id:"racha",ch:"火",n:"Racha",d:g=>`Practica ${g} días seguidos`,v:()=>Math.max(PT.best||0,curStreak()),g:[3,7,14,30]},
+ {id:"pal",ch:"词",n:"Palabras",d:g=>`Marca ${g} palabras como sabidas`,v:()=>knownCount(),g:[25,50,100,V.length]},
+ {id:"plan",ch:"日",n:"Plan del día",d:g=>`Completa el plan del día ${g===1?"una vez":g+" veces"}`,v:()=>ST.plans||0,g:[1,7,30]},
+ {id:"test",ch:"考",n:"Tests",d:g=>`Termina ${g===1?"un test":g+" tests"}`,v:()=>ST.tests||0,g:[1,10,25]},
+ {id:"perf",ch:"满",n:"Test perfecto",d:g=>g===1?"Saca 10 de 10 en un test":`Saca 10 de 10 en ${g} tests`,v:()=>ST.perfect||0,g:[1,5,15]},
+ {id:"hab",ch:"说",n:"Hablar",d:g=>`Aprueba ${g} frases en voz alta`,v:()=>ST.speakOk||0,g:[10,50,150]},
+ {id:"pron",ch:"音",n:"Buena pronunciación",d:g=>`Saca 90 o más en ${g} frases`,v:()=>ST.speakGold||0,g:[10,50,150]},
+ {id:"esc",ch:"写",n:"Escritura",d:g=>`Escribe ${g} caracteres a mano`,v:()=>ST.chars||0,g:[10,50,150]},
+ {id:"conv",ch:"聊",n:"Conversaciones",d:g=>g===1?"Termina una conversación":g===CONV.length?"Termina todas las conversaciones":`Termina ${g} conversaciones distintas`,v:()=>(ST.convDone||[]).length,g:[1,4,CONV.length]},
+ {id:"brill",ch:"棒",n:"Conversación brillante",d:g=>`Saca 90 o más en ${g===1?"una conversación":g+" conversaciones"}`,v:()=>ST.convGold||0,g:[1,5,15]},
+ {id:"tono",ch:"声",n:"Oído para los tonos",d:g=>`Acierta ${g} tonos en el juego`,v:()=>ST.tones||0,g:[20,100,300]}];
+const MEDALS=FAMS.flatMap(f=>f.g.map((g,i)=>({id:f.id+i,f,g,t:i,ch:f.ch,name:`${f.n} · ${TIER[i][0]}`,desc:f.d(g)})));
+let earned=store.get("hsk1-medals",[]);
+const medalQ=[];
+function medalSVG(m,on){const col=on?`var(${TIER[m.t][1]})`:"var(--surface-2)";const ink=on?"#fff":"var(--muted)";
+  return `<svg viewBox="0 0 64 72" aria-hidden="true"><path d="M18 2h11l7 20H24z" fill="${on?"var(--t4)":"var(--line)"}"/><path d="M46 2H35l-7 20h12z" fill="${on?"var(--t1)":"var(--line)"}"/><circle cx="32" cy="44" r="26" fill="${col}"/><circle cx="32" cy="44" r="20.5" fill="none" stroke="${on?"rgba(255,255,255,.5)":"var(--line)"}" stroke-width="2"/><text x="32" y="53" text-anchor="middle" font-size="25" font-family="Noto Serif SC,Songti SC,serif" fill="${ink}">${m.ch}</text></svg>`}
+let medalsReady=false;
+function checkMedals(){if(!medalsReady||!ME)return;let changed=false;
+  for(const m of MEDALS){if(earned.includes(m.id))continue;if(m.f.v()>=m.g){earned.push(m.id);medalQ.push(m);changed=true}}
+  if(changed){store.set("hsk1-medals",earned);if($("#medalPop").hidden)showMedal()}}
+function showMedal(){const m=medalQ.shift();if(!m){$("#medalPop").hidden=true;return}
+  $("#popIn").innerHTML=`${medalSVG(m,true)}<span class="k">¡Medalla nueva!</span><h2 id="popTitle">${esc(m.name)}</h2><p class="lead" style="margin:0">${esc(m.desc)}.</p>${medalQ.length?`<p class="count" style="margin:0">Y ${medalQ.length} más</p>`:""}<div class="fc-actions" style="margin-top:8px"><button class="btn" id="popNext">${medalQ.length?"Siguiente":"¡Genial!"}</button><button class="btn ghost" id="popAll">Ver mis logros</button></div>`;
+  $("#medalPop").hidden=false;
+  $("#popNext").onclick=showMedal;$("#popAll").onclick=()=>{medalQ.length=0;$("#medalPop").hidden=true;openStats()};
+  try{$("#popNext").focus()}catch(e){}}
+const WD=["dom","lun","mar","mié","jue","vie","sáb"],MO=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+function openStats(){
+  const p=PROF.find(x=>x.id===ME);if(!p)return;
+  const lvl=Math.floor(PT.total/LVL)+1,inLvl=PT.total%LVL;
+  const days=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d)}
+  const vals=days.map(d=>HIST[dstr(d)]||0),mx=Math.max(10,...vals),top=vals.indexOf(Math.max(...vals));
+  const ti=13;
+  const bars=days.map((d,i)=>{const v=vals[i],h=Math.round(v/mx*100);const lab=`${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]}: ${v} puntos`;
+    return `<button class="bar-col" data-tip="${esc(lab)}" aria-label="${esc(lab)}">${(i===ti||i===top)&&v?`<span class="bar-v" style="bottom:${h}%">${v}</span>`:""}<span class="bar${v?"":" zero"}" style="height:${v?Math.max(h,3):0}%"></span></button>`}).join("");
+  const lbls=days.map((d,i)=>`<span class="${i===ti?"td":""}">${i===ti?"hoy":d.getDate()}</span>`).join("");
+  const week=vals.slice(7).reduce((a,b)=>a+b,0);
+  const ach=[["Tests terminados",ST.tests||0],["Tests perfectos",ST.perfect||0],["Frases aprobadas",ST.speakOk||0],["Frases con 90 o más",ST.speakGold||0],["Caracteres escritos",ST.chars||0],["Conversaciones",ST.convs||0],["Planes del día completos",ST.plans||0],["Tonos acertados",ST.tones||0]];
+  const fams=FAMS.map(f=>{const tiers=MEDALS.filter(m=>m.f===f);return tiers.map(m=>{const on=earned.includes(m.id),v=Math.min(f.v(),m.g);
+    return `<div class="medal${on?"":" off"}" title="${esc(m.desc)}">${medalSVG(m,on)}<b>${esc(m.name)}</b><small>${esc(m.desc)}</small>${on?"":`<span class="mp"><i style="width:${v/m.g*100}%"></i></span><small>${v} de ${m.g}</small>`}</div>`}).join("")}).join("");
+  $("#statsBody").innerHTML=`
+  <div class="lv"><span class="av c${p.c%5}">${esc(initial(p.name))}</span><div style="flex:1;min-width:0"><b>${esc(p.name)} · nivel ${lvl}</b><span class="count">${inLvl} de ${LVL} puntos para el nivel ${lvl+1}</span><div class="lv-bar"><i style="width:${inLvl/LVL*100}%"></i></div></div></div>
+  <h3>Resumen</h3>
+  <div class="tiles">
+    <div class="stat"><b>${PT.total}</b><span>puntos en total</span></div>
+    <div class="stat"><b>${PT.day===today()?PT.today:0}</b><span>puntos hoy</span></div>
+    <div class="stat"><b>${week}</b><span>últimos 7 días</span></div>
+    <div class="stat"><b>${curStreak()}</b><span>días seguidos</span></div>
+    <div class="stat"><b>${Math.max(PT.best||0,curStreak())}</b><span>mejor racha</span></div>
+    <div class="stat"><b>${knownCount()}/${V.length}</b><span>palabras sabidas</span></div>
+  </div>
+  <h3>Puntos de los últimos 14 días</h3>
+  <div class="bars" id="bars">${bars}</div><div class="bar-lbls" aria-hidden="true">${lbls}</div>
+  <div class="bar-tip" id="barTip">Toca una barra para ver los puntos de ese día.</div>
+  <h3>Lo que has hecho</h3>
+  <div class="acts">${ach.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join("")}</div>
+  <h3>Medallas · ${earned.length} de ${MEDALS.length}</h3>
+  <div class="medals">${fams}</div>`;
+  $("#bars").onclick=e=>{const b=e.target.closest(".bar-col");if(!b)return;document.querySelectorAll(".bar-col.sel").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");$("#barTip").textContent=b.dataset.tip};
+  openSheet("#statsSheet");
+}
+$("#ptsBtn").onclick=openStats;
+$("#statsClose").onclick=()=>closeSheet("#statsSheet");
+$("#statsSheet").onclick=e=>{if(e.target.id==="statsSheet")closeSheet("#statsSheet")};
+document.addEventListener("click",e=>{if(e.target.closest("[data-stats]"))openStats()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("#medalPop").hidden)showMedal();else if(!$("#statsSheet").hidden)closeSheet("#statsSheet")}});
+
 /* ===== inicio de la app ===== */
 initSettings();renderPts();renderBasic();renderDlg();fillSpk();
 $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
+medalsReady=true;checkMedals();if(cur==="home")renderHome();
 </script>
 </body>
 </html>

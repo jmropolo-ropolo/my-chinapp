@@ -556,6 +556,37 @@ header.top{min-width:0}
 .w-tools .btn{padding:10px 4px;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #wStage{gap:10px;padding:12px;scroll-margin-top:8px}
 #wStage .fb{min-height:1.4em;margin:0}
+
+/* fonética */
+.f-table{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin:8px 0}
+.f-tile{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--ink);box-shadow:0 2px 0 var(--line)}
+.f-tile b{font-size:24px;font-weight:700;line-height:1.1}
+.f-tile small{font-size:13px;font-weight:600}
+.f-tile.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.f-tile:active{transform:translateY(1px)}
+.f-tip{border:1px solid var(--line);border-left:4px solid var(--accent);background:var(--surface);border-radius:12px;padding:10px 14px;margin:6px 0 4px}
+.f-tip-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.f-tip-h>b{font-size:28px}.f-tip-h>span:not(.f-ex){color:var(--muted)}
+.f-ex{font-size:20px;font-weight:700}.f-ex .han{font-size:18px;color:var(--muted);font-weight:400}
+.f-tip p{margin:6px 0 0}
+.f-sets .chip{font-size:14px}
+.f-play{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.f-q{display:flex;flex-direction:column;align-items:center;gap:6px}
+.f-ask{color:var(--muted);font-size:16px}
+.f-syl{display:flex;align-items:center;justify-content:center;gap:4px;font-size:clamp(40px,11vw,56px);font-weight:700;line-height:1.1}
+.f-gap{min-width:1.3em;padding:0 .15em;border:3px dashed var(--line);border-radius:12px;text-align:center;color:var(--muted)}
+.f-gap.set{border-style:solid;border-color:var(--accent);color:inherit}
+#fChoices .choice{min-height:60px;justify-content:center}
+#fChoices .f-big{font-size:28px;line-height:1.1}
+#fChoices small{font-size:12px;color:var(--muted);font-weight:500}
+.f-build{display:flex;flex-direction:column;gap:10px;width:min(100%,560px)}
+.f-row{display:flex;flex-direction:column;gap:6px}
+.f-lab{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.f-opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.f-b{font-size:20px;font-weight:700;padding:10px 4px;justify-content:center;text-align:center;white-space:nowrap}
+.f-b.ok{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}.f-b.no{border-color:var(--bad);box-shadow:0 0 0 2px var(--bad)}
+#fBuild .btn{align-self:center}
+#fFb .han{color:var(--muted);font-size:.9em}
 </style>
 </head>
 <body>
@@ -672,6 +703,7 @@ header.top{min-width:0}
       <div class="fb" id="gFb" aria-live="polite"></div>
       <button class="btn ghost" id="gNext">Siguiente</button>
     </div>
+    <button class="tip set-card" data-go-fon style="margin:6px 0 4px"><span><b>Practica consonantes y vocales →</b><br><span class="count">b/p, d/t, j/q/x, zh/z… y construye sílabas en Fonética.</span></span></button>
     <h3>Dónde va la marca del tono</h3>
     <ul class="rules">
       <li>Prioridad <span class="kbd">a → o → e</span>: si la sílaba tiene a, la marca va en la a (hǎo); si no, en la o o la e (dōu, xiè).</li>
@@ -730,6 +762,39 @@ header.top{min-width:0}
         <button class="btn" id="cYes">La sé</button>
       </div>
       <button class="btn ghost" id="cAuto">▶ Modo manos libres</button>
+    </div>
+  </section>
+
+  <!-- FONETICA -->
+  <section id="fon" class="panel" hidden>
+    <h2>Fonética</h2>
+    <p class="lead">Consonantes (iniciales) y vocales (finales) del pinyin. Toca un sonido para oírlo y ver cómo se pronuncia; luego practica con los ejercicios.</p>
+    <h3>Tabla de sonidos</h3>
+    <div class="bar" id="fTabs"><button class="chip" data-w="ini" aria-pressed="true">Consonantes</button><button class="chip" data-w="fin" aria-pressed="false">Vocales</button></div>
+    <div class="f-table" id="fTable"></div>
+    <div class="f-tip" id="fTip" hidden></div>
+    <h3>Ejercicios</h3>
+    <div class="bar" id="fKinds">
+      <button class="chip" data-kind="ini" aria-pressed="true">Consonantes</button>
+      <button class="chip" data-kind="fin" aria-pressed="false">Vocales</button>
+      <button class="chip" data-kind="build" aria-pressed="false">Construye la sílaba</button>
+      <button class="chip" data-kind="ton" aria-pressed="false">Tonos</button>
+      <button class="chip" data-kind="mix" aria-pressed="false">Mezcla</button>
+    </div>
+    <div class="bar f-sets" id="fSets"></div>
+    <div class="game" id="fGame">
+      <div class="score" id="fScore"></div>
+      <div class="f-play"><button class="btn" id="fPlay">▶ Escuchar</button><button class="btn ghost" id="fSlow">🐢 Lento</button></div>
+      <div class="f-q" id="fQ"></div>
+      <div class="choices" id="fChoices"></div>
+      <div class="f-build" id="fBuild" hidden></div>
+      <div class="fb" id="fFb" aria-live="polite"></div>
+      <button class="btn" id="fNext" hidden>Siguiente</button>
+    </div>
+    <div class="game" id="fEnd" hidden>
+      <div class="k-score" id="fEndScore"></div>
+      <div class="lead" id="fEndTxt" style="margin:0"></div>
+      <button class="btn" id="fAgain">Otra ronda</button>
     </div>
   </section>
 
@@ -1253,7 +1318,7 @@ const wordItem=w=>({h:w.h,hHTML:hanHTML(w),pyHTML:pyHTML(w.py),e:w.e});
 const sentItem=s=>({h:s.h,pyHTML:esc(s.py),e:s.e,py:s.py});
 
 /* ===== navegación ===== */
-const GROUPS={home:[["home","Hoy"]],learn:[["basic","Lo básico"],["vocab","Vocabulario"],["dlg","Diálogos"],["tones","Tonos"],["phr","Frases y reglas"]],practice:[["cards","Tarjetas"],["test","Test"],["speak","Hablar"],["write","Escribir"]],chat:[["conv","Conversar"]]};
+const GROUPS={home:[["home","Hoy"]],learn:[["basic","Lo básico"],["vocab","Vocabulario"],["dlg","Diálogos"],["tones","Tonos"],["phr","Frases y reglas"]],practice:[["cards","Tarjetas"],["test","Test"],["fon","Fonética"],["speak","Hablar"],["write","Escribir"]],chat:[["conv","Conversar"]]};
 const PG={};for(const g in GROUPS)for(const[p]of GROUPS[g])PG[p]=g;
 const lastSub=store.get("hsk1-sub",{});
 let cur="home";
@@ -1265,7 +1330,7 @@ function goPanel(id){
   const sn=$("#subnav"),list=GROUPS[g];sn.hidden=list.length<2;
   sn.innerHTML=list.map(([p,t])=>`<button role="tab" data-p="${p}" aria-selected="${p===id}">${typeof PANEL_IC!=="undefined"&&PANEL_IC[p]?ICON[PANEL_IC[p][0]]:""}${t}</button>`).join("");
   document.querySelectorAll(".panel").forEach(p=>p.hidden=p.id!==id);
-  if(id==="home")renderHome();if(id==="vocab")renderVocab();if(id==="cards"&&!deck.length)buildDeck();if(id==="test"&&!tq&&!tDone)newTest();
+  if(id==="home")renderHome();if(id==="vocab")renderVocab();if(id==="cards"&&!deck.length)buildDeck();if(id==="test"&&!tq&&!tDone)newTest();if(id==="fon"&&!F.list.length)fNew();
   window.scrollTo(0,0);
 }
 $("#subnav").onclick=e=>{const b=e.target.closest("[data-p]");if(b)goPanel(b.dataset.p)};
@@ -1971,7 +2036,8 @@ const ICON={
  fire:'<path d="M12 3c1 3.5 5.5 5.6 5.5 10.2a5.5 5.5 0 0 1-11 0c0-2.3 1.1-3.9 2.4-5.1.2 1.7 1 2.8 2.4 3.3C10.9 8.6 11.4 5.6 12 3z"/>',
  star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
  medal:'<path d="M8 3h3l2 5H10z"/><path d="M16 3h-3l-2 5h3z"/><circle cx="12" cy="14.5" r="6"/><path d="M12 12v5"/>',
- wave:'<path d="M3 12c1.5-4 3-4 4.5 0s3 4 4.5 0 3-4 4.5 0 3 4 4.5 0"/>'};
+ wave:'<path d="M3 12c1.5-4 3-4 4.5 0s3 4 4.5 0 3-4 4.5 0 3 4 4.5 0"/>',
+ abc:'<path d="M3 18 7 6l4 12M4.4 14h5.2"/><path d="M14 8v10M14 13.5a3 3 0 1 0 6 0 3 3 0 0 0-6 0"/>'};
 const svgI=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
 for(const k in ICON)if(!ICON[k].startsWith("<svg"))ICON[k]=svgI(k);
 const PLAN_IC={cards:"cards",test:"test",speak:"mic",write:"pen",chat:"chat"};
@@ -2032,7 +2098,7 @@ renderHome=function(){_renderHome();setTimeout(renderRing,0);renderMode();
 /* ===== diseño visual ===== */
 const PICT=new Set(["茶","狗","猫","菜","杯子","鸡蛋","口","米饭","面包","饭店","商店","电脑","鸡","雨","椅子","牛奶","书","手机","出租车","嘴","水","家","学校","中国","法国","泰国","零","一","二","三","四","五","六","七","八","九","十","医生","老师","学生","游泳","旅游","春"]);
 const imgOk=w=>imgUnique(w)&&PICT.has(w.h);
-const PANEL_IC={basic:["idea"],vocab:["listen"],dlg:["dialog"],tones:["wave"],phr:["learn"],cards:["cards"],test:["test"],speak:["mic"],write:["pen"],conv:["chat"]};
+const PANEL_IC={basic:["idea"],vocab:["listen"],dlg:["dialog"],tones:["wave"],fon:["abc"],phr:["learn"],cards:["cards"],test:["test"],speak:["mic"],write:["pen"],conv:["chat"]};
 document.querySelectorAll(".panel").forEach(p=>{const ic=PANEL_IC[p.id];const h=p.querySelector("h2");if(!ic||!h)return;h.classList.add("hh");h.insertAdjacentHTML("afterbegin",`<span class="hico ic-${ic[0]}">${ICON[ic[0]]}</span>`)});
 function renderRing(){
   const all=document.querySelectorAll("#plan .step").length,done=document.querySelectorAll("#plan .step.done").length,p=all?done/all:0,c=2*Math.PI*36;
@@ -2070,11 +2136,170 @@ document.addEventListener("click",e=>{
   const a=e.target.closest("[data-size]");if(a){S.size=+a.dataset.size;store.set("hsk1-audio",S);applyRead();renderRead();return}
   const b=e.target.closest("[data-tonec]");if(b){S.tonec=b.dataset.tonec==="1";store.set("hsk1-audio",S);applyRead();renderRead();return}
   if(e.target.closest("[data-go-tones]"))goPanel("tones");
+  if(e.target.closest("[data-go-fon]"))goPanel("fon");
 });
 const TL=[[1,"ā","1.º","alto y plano","M2 4h22"],[2,"á","2.º","sube","M2 11L24 3"],[3,"ǎ","3.º","baja y sube","M2 5Q9 14 13 12T24 4"],[4,"à","4.º","baja","M2 3L24 12"],[5,"a","neutro","corto y suave","M10 8h6"]];
 const legendHTML=()=>`<button class="tone-legend" data-go-tones aria-label="Los colores indican el tono. Abrir la explicación de los tonos"><span class="tl-t">Los colores indican el tono de cada sílaba<small>Ver tonos ›</small></span>${TL.map(([n,m,o,d,p])=>`<span class="tl t${n}" title="${o} tono: ${d}"><svg viewBox="0 0 26 14" aria-hidden="true"><path d="${p}"/></svg><b>${m}</b>${o}</span>`).join("")}</button>`;
 ["vocab","cards","write","basic"].forEach(id=>{const lead=document.querySelector("#"+id+" > .lead");if(lead)lead.insertAdjacentHTML("afterend",legendHTML())});
 applyRead();renderRead();
+
+/* ===== fonética ===== */
+const FON_INI=[
+["b","bā八","Como una p muy suave, sin soltar aire. No es la b española."],
+["p","pà怕","Una p con golpe de aire: pon la mano delante de la boca y nótalo."],
+["m","mā妈","Como la m española."],
+["f","fēi飞","Como la f española."],
+["d","dà大","Como una t suave, sin aire."],
+["t","tā他","Una t con golpe de aire."],
+["n","nǐ你","Como la n española."],
+["l","lā拉","Como la l española."],
+["g","gē哥","Como una k suave, sin aire (parecida a la g de «gato»)."],
+["k","kě渴","Una k con golpe de aire."],
+["h","hē喝","Como una j española suave, sin raspar la garganta."],
+["j","jī鸡","Una «ch» suave, con la punta de la lengua abajo y sonriendo. Solo va con i y ü."],
+["q","qī七","Como la j pero con golpe de aire: «chhi», sonriendo."],
+["x","xī西","Entre la s y la «sh» inglesa, sonriendo y con la lengua abajo."],
+["zh","zhī知","Una «ch» con la punta de la lengua doblada hacia atrás, sin aire."],
+["ch","chī吃","Igual que zh, pero con golpe de aire."],
+["sh","shī师","Como la «sh» inglesa, con la lengua doblada hacia atrás."],
+["r","rì日","Como una «y» rioplatense muy suave, con la lengua hacia atrás."],
+["z","zì字","Como «ds» (la zz de «pizza» en italiano), sin aire."],
+["c","cí词","Como «ts» con golpe de aire."],
+["s","sì四","Como la s española."]];
+const FON_FIN=[
+["a","bā八","Como la a española, bien abierta."],
+["o","bō波","Una o redonda; suena casi «uo»."],
+["e","gē哥","No es la e española: es una «e» hecha atrás, en la garganta, a medio camino de la o."],
+["i","nǐ你","Como la i española. Ojo: después de z c s zh ch sh r no suena i, sino un zumbido (zì, shì)."],
+["u","bù不","Como la u española."],
+["ü","nǚ女","Di «i» y redondea los labios como para decir «u». Tras j, q, x se escribe u sin puntos (qù = q + ü)."],
+["ai","bái白","Como «ai» en español."],
+["ei","měi美","Como «ei» en español."],
+["ao","hǎo好","Como «ao» en «Bilbao»."],
+["ou","zǒu走","Una o que termina en u: «ou»."],
+["an","fàn饭","Como «an» en español."],
+["en","mén门","La e suena neutra, como «ən»."],
+["ang","máng忙","a + ng nasal, como en el inglés «song»."],
+["eng","fēng风","ə + ng nasal."],
+["ong","dōng东","Suena casi «ung»."],
+["er","èr二","Una «ar» con la lengua doblada hacia atrás."],
+["ia","xià下","«ia» como en español."],
+["ie","xiè谢","«ie» como en «pie»."],
+["iao","xiǎo小","«iao», todo seguido."],
+["iu","liù六","Se escribe iu pero suena «iou»: «liou»."],
+["ian","xiān先","Ojo: suena «ien», no «ian»."],
+["in","xīn新","Como «in» en español."],
+["iang","xiǎng想","i + ang."],
+["ing","xīng星","i + ng nasal."],
+["ua","huā花","«ua» como en «agua»."],
+["uo","shuō说","«uo» como en «cuota»."],
+["uai","kuài快","«uai» como en «Uruguay»."],
+["ui","duì对","Se escribe ui pero suena «uei»: «duei»."],
+["uan","guān关","«uan» como en «Juan»."],
+["un","dùn顿","Se escribe un pero suena «uen»."],
+["uang","huáng黄","u + ang."],
+["üe","xué学","ü + e. Tras j, q, x se escribe ue."],
+["üan","yuǎn远","ü + an (suena «üen»)."],
+["ün","yún云","ü + n."]];
+const FON_SETS={
+ini:{"b·p·m·f": "bā八 pá爬 mā妈 fā发|bái白 pái排 mǎi买|bǐ笔 pí皮 mǐ米|bù不 pǔ普 mù木 fù父|bāo包 pǎo跑 māo猫|bàn半 pán盘 màn慢 fàn饭|běn本 pén盆 mén门 fēn分|bēi杯 péi陪 měi美 fēi飞", "d·t·n·l": "dà大 tā他 ná拿 là辣|dú读 tǔ土 nǔ努 lù路|dǎo岛 tǎo讨 nǎo脑 lǎo老|dī低 tī踢 nǐ你 lǐ里|dōng东 tōng通 nóng农 lóng龙|dòu豆 tóu头 lóu楼|dìng定 tīng听 líng零", "g·k·h": "gē哥 kě渴 hē喝|gǔ古 kǔ苦 hú湖|gāo高 kǎo考 hǎo好|gōng工 kǒng孔 hóng红|guā瓜 kuā夸 huā花|gāi该 kāi开 hái孩", "j·q·x": "jī鸡 qī七 xī西|jiā家 qià恰 xià下|jiǔ九 qiú球 xiū休|jiàn见 qián钱 xiān先|jīn金 qín琴 xīn新|jìng静 qǐng请 xìng姓|jiào叫 qiáo桥 xiǎo小|jiě姐 qiě且 xiě写|jù句 qù去 xǔ许|jiāng江 qiáng墙 xiǎng想|jué决 quē缺 xué学", "zh·ch·sh·r": "zhī知 chī吃 shī师 rì日|zhù住 chū出 shū书 rù入|zhè这 chē车 shé蛇 rè热|zhǎo找 chǎo吵 shǎo少 rào绕|zhāng张 chàng唱 shàng上 ràng让|zhōu周 chóu愁 shǒu手 ròu肉", "z·c·s": "zì字 cí词 sì四|zǎo早 cǎo草 sǎo扫|zuò坐 cuò错 suǒ所|zài在 cài菜 sài赛|zǒu走 còu凑 sōu搜|zūn尊 cūn村 sūn孙", "zh·z": "zhī知 zī资|zhù住 zú足|zhǎo找 zǎo早|zhè这 zé则", "ch·c": "chī吃 cí词|chū出 cū粗|chē车 cè册|chǎo吵 cǎo草", "sh·s": "shī师 sī丝|shū书 sū苏|shǎo少 sǎo扫|shàng上 sāng桑", "f·h": "fēi飞 hēi黑|fú服 hú湖|fàn饭 hàn汉|fēn分 hěn很"},
+fin:{"a·o·e": "bā八 bō波|mā妈 mō摸|hā哈 hē喝|pà怕 pó婆|chá茶 chē车|shā沙 shé蛇", "ai·ei·ao·ou": "bái白 bēi杯 bāo包|mǎi买 měi美 māo猫|lái来 léi雷 lǎo老 lóu楼|hǎi海 hēi黑 hǎo好 hòu后|gāi该 gěi给 gāo高 gǒu狗|kāi开 kǎo考 kǒu口|dài带 dǎo岛 dòu豆|zài在 zéi贼 zǎo早 zǒu走", "an·ang": "fàn饭 fáng房|shān山 shāng伤|lán蓝 láng狼|mǎn满 máng忙|bàn半 bāng帮|zhàn站 zhāng张|kàn看 kāng康", "en·eng": "mén门 mèng梦|zhēn真 zhèng正|rén人 réng仍|fēn分 fēng风|shēn身 shēng生|pén盆 péng朋", "in·ing": "xīn新 xīng星|jīn金 jīng京|qín琴 qíng晴|mín民 míng名|bīn宾 bīng冰|lín林 líng零", "ian·iang": "jiān尖 jiāng江|xiān先 xiāng香|qián钱 qiáng墙|liǎn脸 liǎng两|niàn念 niáng娘", "u·ü": "nǚ女 nǔ努|lǜ绿 lù路|lǘ驴 lú炉", "ie·üe": "xié鞋 xué学|jiě姐 jué决|qiě且 quē缺", "uo·ou·iu": "zuò坐 zǒu走|shuō说 shǒu手|huǒ火 hòu后|guō锅 gǒu狗|liù六 lòu漏", "ui·un·uan": "duì对 dùn顿 duǎn短|huí回 hūn婚 huān欢|guì贵 gǔn滚 guān关|shuì睡 shùn顺 shuān拴|zuì最 zūn尊 zuān钻"},
+ton:"mā妈 má麻 mǎ马 mà骂|bā八 bá拔 bǎ把 bà爸|tāng汤 táng糖 tǎng躺 tàng烫|shī师 shí十 shǐ使 shì是|wū屋 wú无 wǔ五 wù雾|tōng通 tóng同 tǒng桶 tòng痛|yān烟 yán盐 yǎn眼 yàn燕|qī七 qí骑 qǐ起 qì气|xiāng香 xiáng详 xiǎng想 xiàng向|fēi飞 féi肥 fèi费"};
+const FONG=[["b","p","m","f"],["d","t","n","l"],["g","k","h"],["j","q","x"],["zh","ch","sh","r"],["z","c","s"]];
+const fItem=s=>{const h=s.slice(-1),py=s.slice(0,-1);return{py,h}};
+const fBase=py=>py.normalize("NFD").replace(/[̄́̌̀]/g,"").normalize("NFC");
+const fIni=py=>{const b=fBase(py);for(const i of["zh","ch","sh"])if(b.startsWith(i))return i;return /^[bpmfdtnlgkhjqxrzcs]/.test(b)?b[0]:""};
+const fFin=py=>fBase(py).slice(fIni(py).length);
+function fMark(base,t){if(t<1||t>4)return base;const M={a:"āáǎà",e:"ēéěè",i:"īíǐì",o:"ōóǒò",u:"ūúǔù","ü":"ǖǘǚǜ"};
+  let k=base.indexOf("a");if(k<0)k=base.indexOf("e");if(k<0&&base.includes("ou"))k=base.indexOf("o");
+  if(k<0){for(let j=base.length-1;j>=0;j--)if(M[base[j]]){k=j;break}}
+  return k<0?base:base.slice(0,k)+M[base[k]][t-1]+base.slice(k+1)}
+const fFam=(kind,set)=>{const src=kind==="ton"?{t:FON_SETS.ton}:FON_SETS[kind];const keys=set==="all"?Object.keys(src):[set];
+  return keys.flatMap(k=>src[k].split("|").map(f=>({set:k,items:f.split(" ").map(fItem)})))};
+const F={kind:"ini",set:"all",list:[],i:0,ok:0,res:[],q:null,ans:false,done:false,build:null};
+const FKIND={ini:"Consonantes",fin:"Vocales",build:"Construye la sílaba",ton:"Tonos",mix:"Mezcla"};
+function fRenderTable(which){
+  const L=which==="fin"?FON_FIN:FON_INI;
+  $("#fTable").innerHTML=L.map(([s,ex],i)=>{const it=fItem(ex);return`<button class="f-tile" data-i="${i}"><b>${esc(s)}</b><small class="t${tone(it.py)}">${esc(it.py)}</small></button>`}).join("");
+  $("#fTable").dataset.w=which;$("#fTip").hidden=true;
+  document.querySelectorAll("#fTabs [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===which));
+}
+$("#fTabs").onclick=e=>{const b=e.target.closest("[data-w]");if(b)fRenderTable(b.dataset.w)};
+$("#fTable").onclick=e=>{const b=e.target.closest(".f-tile");if(!b)return;const L=$("#fTable").dataset.w==="fin"?FON_FIN:FON_INI;const[s,ex,tip]=L[+b.dataset.i];const it=fItem(ex);
+  document.querySelectorAll(".f-tile").forEach(x=>x.classList.toggle("on",x===b));
+  $("#fTip").hidden=false;$("#fTip").innerHTML=`<div class="f-tip-h"><b>${esc(s)}</b> <span>como en</span> <span class="f-ex">${pyHTML(it.py)} <span class="han">${it.h}</span></span><button class="spk" data-say="${esc(it.h)}" aria-label="Escuchar"></button></div><p>${esc(tip)}</p>`;fillSpk($("#fTip"));speak(it.h)};
+function fSetChips(){
+  const k=F.kind,src=k==="ini"?FON_SETS.ini:k==="fin"?FON_SETS.fin:null;
+  $("#fSets").hidden=!src;if(!src){F.set="all";return}
+  if(F.set!=="all"&&!src[F.set])F.set="all";
+  $("#fSets").innerHTML=[["all","Todas"],...Object.keys(src).map(s=>[s,s])].map(([v,t])=>`<button class="chip" data-set="${esc(v)}" aria-pressed="${F.set===v}">${esc(t)}</button>`).join("");
+}
+$("#fKinds").onclick=e=>{const b=e.target.closest("[data-kind]");if(!b)return;F.kind=b.dataset.kind;F.set="all";
+  document.querySelectorAll("#fKinds [data-kind]").forEach(x=>x.setAttribute("aria-pressed",x===b));fSetChips();fNew()};
+$("#fSets").onclick=e=>{const b=e.target.closest("[data-set]");if(!b)return;F.set=b.dataset.set;
+  document.querySelectorAll("#fSets [data-set]").forEach(x=>x.setAttribute("aria-pressed",x===b));fNew()};
+function fMakeQ(kind){
+  if(kind==="mix")kind=pick(["ini","fin","build","ton"]);
+  if(kind==="build"){const fams=[...fFam("ini","all"),...fFam("fin","all")];const fam=pick(fams);const w=pick(fam.items);return{kind,w,fam}}
+  const fams=fFam(kind,kind==="ton"?"all":F.set);const fam=pick(fams);return{kind,w:pick(fam.items),fam}}
+function fNew(){F.list=Array.from({length:10},()=>fMakeQ(F.kind));F.i=0;F.ok=0;F.res=[];F.done=false;$("#fEnd").hidden=true;$("#fGame").hidden=false;fShow()}
+function fScore(){$("#fScore").innerHTML=`<div class="dots">${F.list.map((_,i)=>`<i class="${F.res[i]!=null?(F.res[i]?"ok":"no"):i===F.i?"cur":""}"></i>`).join("")}</div>Pregunta ${F.i+1} de ${F.list.length} · ${F.ok} aciertos`}
+function fOpt(v,label,cls=""){return`<button class="choice f-opt ${cls}" data-v="${esc(v)}">${label}</button>`}
+function fShow(){
+  if(F.i>=F.list.length)return fEnd();
+  F.ans=false;const q=F.list[F.i];F.q=q;fScore();$("#fFb").textContent="";$("#fFb").className="fb";$("#fNext").hidden=true;$("#fBuild").hidden=true;$("#fChoices").hidden=false;
+  const w=q.w,ini=fIni(w.py),fin=fFin(w.py),t=tone(w.py);
+  const toned=w.py.slice(ini.length);
+  if(q.kind==="ini"){
+    const set=q.fam.set.split("·");const opts=set.length>=3?set:shuffle([...new Set([...set,...shuffle(FONG.find(g=>g.includes(ini))||[]).filter(x=>!set.includes(x)).slice(0,1)])]);
+    $("#fQ").innerHTML=`<div class="f-ask">¿Qué consonante oyes?</div><div class="f-syl"><span class="f-gap">?</span><span class="t${t}">${esc(toned)}</span></div>`;
+    $("#fChoices").innerHTML=opts.map(o=>fOpt(o,`<b class="f-big">${esc(o)}</b>`)).join("");q.right=ini}
+  else if(q.kind==="fin"){
+    const opts=[...new Set(q.fam.items.map(x=>fFin(x.py)))];
+    $("#fQ").innerHTML=`<div class="f-ask">¿Qué vocal oyes?</div><div class="f-syl"><span>${esc(ini)}</span><span class="f-gap">?</span></div>`;
+    $("#fChoices").innerHTML=shuffle(opts).map(o=>fOpt(o,`<b class="f-big">${esc(o)}</b>`)).join("");q.right=fin}
+  else if(q.kind==="ton"){
+    $("#fQ").innerHTML=`<div class="f-ask">¿Qué tono oyes?</div><div class="f-syl"><span>${esc(fBase(w.py))}</span></div>`;
+    $("#fChoices").innerHTML=q.fam.items.map(x=>fOpt(x.py,`<b class="f-big t${tone(x.py)}">${esc(x.py)}</b><small>${["","1.º tono · plano","2.º tono · sube","3.º tono · baja y sube","4.º tono · cae"][tone(x.py)]}</small>`)).join("");q.right=w.py}
+  else{
+    const grp=FONG.find(g=>g.includes(ini))||[];
+    const iniOpts=shuffle([...new Set([ini,...shuffle(grp.filter(x=>x!==ini)).slice(0,3)])]);
+    const allF=[...new Set([...fFam("ini","all"),...fFam("fin","all")].flatMap(f=>f.items).filter(x=>{const i2=fIni(x.py);return(grp.includes(i2))}).map(x=>fFin(x.py)))];
+    const near=allF.filter(f=>f!==fin);const famF=q.fam.items.map(x=>fFin(x.py)).filter(f=>f!==fin);
+    const finOpts=shuffle([...new Set([fin,...famF,...shuffle(near)])].slice(0,4));
+    F.build={ini:null,fin:null,t:null,iniOpts,finOpts};q.right=w.py;
+    $("#fQ").innerHTML=`<div class="f-ask">Escucha y construye la sílaba</div><div class="f-syl f-slots"><span class="f-gap" id="fsI">?</span><span class="f-gap" id="fsF">?</span></div>`;
+    $("#fChoices").hidden=true;$("#fBuild").hidden=false;
+    $("#fBuild").innerHTML=`<div class="f-row"><span class="f-lab">1 · Consonante</span><div class="f-opts" data-part="ini">${iniOpts.map(o=>`<button class="chip f-b" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>
+<div class="f-row"><span class="f-lab">2 · Vocal</span><div class="f-opts" data-part="fin">${finOpts.map(o=>`<button class="chip f-b" data-v="${esc(o)}">${esc(o)}</button>`).join("")}</div></div>
+<div class="f-row"><span class="f-lab">3 · Tono</span><div class="f-opts" data-part="t">${[1,2,3,4].map(n=>`<button class="chip f-b t${n}" data-v="${n}">${["ˉ","ˊ","ˇ","ˋ"][n-1]} ${n}.º</button>`).join("")}</div></div>
+<button class="btn" id="fCheck" disabled>Comprobar</button>`}
+  setTimeout(()=>speak(w.h),250);
+}
+function fBuildRender(){const b=F.build;const s=(b.ini??"?")+(b.fin?fMark(b.fin,b.t||0):"?");
+  $("#fsI").textContent=b.ini??"?";$("#fsI").classList.toggle("set",!!b.ini);
+  $("#fsF").textContent=b.fin?fMark(b.fin,b.t||0):"?";$("#fsF").className="f-gap"+(b.fin?" set":"")+(b.t?" t"+b.t:"");
+  $("#fCheck").disabled=!(b.ini&&b.fin&&b.t);return s}
+$("#fBuild").onclick=e=>{if(F.ans)return;if(e.target.closest("#fCheck"))return fBuildCheck();const o=e.target.closest(".f-b");if(!o)return;const part=o.parentElement.dataset.part;
+  F.build[part]=part==="t"?+o.dataset.v:o.dataset.v;o.parentElement.querySelectorAll(".f-b").forEach(x=>x.setAttribute("aria-pressed",x===o));fBuildRender()};
+function fBuildCheck(){const b=F.build,w=F.q.w;const okI=b.ini===fIni(w.py),okF=b.fin===fFin(w.py),okT=b.t===tone(w.py);
+  document.querySelectorAll("#fBuild .f-opts").forEach(g=>{const part=g.dataset.part,right=part==="ini"?fIni(w.py):part==="fin"?fFin(w.py):String(tone(w.py));
+    g.querySelectorAll(".f-b").forEach(x=>{if(x.dataset.v===right)x.classList.add("ok");else if(x.getAttribute("aria-pressed")==="true")x.classList.add("no")})});
+  const parts=[okI?null:"la consonante",okF?null:"la vocal",okT?null:"el tono"].filter(Boolean);
+  fAnswer(okI&&okF&&okT,parts.length?`Revisa ${parts.join(" y ")}.`:"")}
+$("#fChoices").onclick=e=>{const b=e.target.closest(".f-opt");if(!b||F.ans||!F.q)return;const ok=b.dataset.v===F.q.right;
+  $("#fChoices").querySelectorAll(".f-opt").forEach(c=>{if(c.dataset.v===F.q.right)c.classList.add("ok");else if(c===b)c.classList.add("no")});fAnswer(ok,"")};
+function fAnswer(ok,extra){F.ans=true;F.res[F.i]=ok;const w=F.q.w;if(ok){F.ok++;addPts(4);stat("fon")}
+  $("#fFb").className="fb "+(ok?"ok":"no");$("#fFb").innerHTML=`${ok?"¡Bien!":"Era"} <b class="t${tone(w.py)}">${esc(w.py)}</b> <span class="han">${w.h}</span> ${extra?`· ${esc(extra)}`:""}`;
+  const fq=$("#fQ").querySelectorAll(".f-gap");if(F.q.kind==="ini"&&fq[0]){fq[0].textContent=fIni(w.py);fq[0].classList.add("set")}if(F.q.kind==="fin"&&fq[0]){fq[0].textContent=w.py.slice(fIni(w.py).length);fq[0].classList.add("set","t"+tone(w.py))}
+  fScore();$("#fNext").hidden=false;speak(w.h)}
+function fEnd(){$("#fGame").hidden=true;$("#fEnd").hidden=false;F.done=true;const n=F.list.length,p=Math.round(F.ok*100/n);
+  $("#fEndScore").textContent=`${F.ok}/${n}`;$("#fEndScore").className="k-score "+(p>=70?"ok":p>=40?"mid":"no");
+  $("#fEndTxt").textContent=`${FKIND[F.kind]}${F.set!=="all"&&(F.kind==="ini"||F.kind==="fin")?" · "+F.set:""} · +${F.ok*4} puntos`;stat("fonr")}
+$("#fPlay").onclick=()=>{if(F.q)speak(F.q.w.h)};
+$("#fSlow").onclick=()=>{if(F.q)speak(F.q.w.h,.55)};
+$("#fNext").onclick=()=>{F.i++;fShow()};$("#fAgain").onclick=fNew;
+fRenderTable("ini");fSetChips();
 
 /* ===== logros y medallas ===== */
 const curStreak=()=>PT.last===today()||PT.last===yesterday()?PT.streak:0;
@@ -2093,6 +2318,7 @@ const FAMS=[
  {id:"esc",ch:"写",n:"Escritura",d:g=>`Escribe ${g} caracteres a mano`,v:()=>ST.chars||0,g:[10,50,150]},
  {id:"conv",ch:"聊",n:"Conversaciones",d:g=>g===1?"Termina una conversación":g===CONV.length?"Termina todas las conversaciones":`Termina ${g} conversaciones distintas`,v:()=>(ST.convDone||[]).length,g:[1,4,CONV.length]},
  {id:"brill",ch:"棒",n:"Conversación brillante",d:g=>`Saca 90 o más en ${g===1?"una conversación":g+" conversaciones"}`,v:()=>ST.convGold||0,g:[1,5,15]},
+ {id:"fon",ch:"拼",n:"Fonética",d:g=>`Acierta ${g} ejercicios de fonética`,v:()=>ST.fon||0,g:[20,100,300]},
  {id:"tono",ch:"声",n:"Oído para los tonos",d:g=>`Acierta ${g} tonos en el juego`,v:()=>ST.tones||0,g:[20,100,300]}];
 const MEDALS=FAMS.flatMap(f=>f.g.map((g,i)=>({id:f.id+i,f,g,t:i,ch:f.ch,name:`${f.n} · ${TIER[i][0]}`,desc:f.d(g)})));
 let earned=store.get("hsk1-medals",[]);
@@ -2155,7 +2381,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();startSync();
-const APP_VER="2026-10-14.1";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-14.2";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

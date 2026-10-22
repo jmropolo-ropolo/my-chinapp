@@ -728,6 +728,25 @@ body.docked .upd{bottom:calc(var(--navh,66px) + 112px)}
 .ws-rule{display:grid;grid-template-columns:1fr 92px;gap:8px;align-items:center;width:100%;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--surface)}
 .ws-rule .chip{grid-column:1/-1;justify-self:start}
 .ws-anim{width:90px;height:90px;border:1px dashed var(--line);border-radius:8px}
+.p-steps{overflow-x:auto;scrollbar-width:none}
+.p-steps::-webkit-scrollbar{display:none}
+.p-steps button{flex:1 0 64px;min-width:64px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:10px;background:var(--surface-2);font-size:18px;border:1px solid transparent;cursor:pointer;color:var(--ink);font-family:inherit}
+.p-steps button small{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+.p-steps button.ok{background:color-mix(in srgb,var(--ok) 18%,var(--surface))}
+.p-steps button.cur{background:var(--surface);border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
+.p-steps button.opt{opacity:.55}
+.rol-pick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.rol-chat{display:flex;flex-direction:column;gap:8px;width:100%}
+.rol-b{max-width:88%;border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:2px;border:1px solid var(--line);background:var(--surface)}
+.rol-b small{color:var(--muted);font-size:12px;font-weight:700}.rol-b b{font-size:20px}.rol-b .han{color:var(--muted)}.rol-b i{font-style:normal;font-size:14px}
+.rol-b.ai{align-self:flex-start}
+.rol-b.me{align-self:flex-end;border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.rol-b.me .rol-es{font-size:17px;font-weight:700}
+.rol-b .score-chip{align-self:flex-end}
+.p-clase{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0 10px}
+.p-clase select{font:inherit;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.p-les.clase{border:2px solid var(--t2);box-shadow:0 0 0 3px color-mix(in srgb,var(--t2) 22%,transparent)}
+.p-les .p-tag{display:inline-block;font-size:11px;font-weight:800;background:var(--t2);color:#fff;border-radius:999px;padding:1px 8px;margin-left:4px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -911,7 +930,8 @@ body.docked .upd{bottom:calc(var(--navh,66px) + 112px)}
   <section id="path" class="panel" hidden>
     <div id="rList">
       <h2>Recorrido</h2>
-      <p class="lead">Las lecciones de tu libro, en su orden. En cada una: palabras, los textos del libro, la gramática, escuchar, repetir, escribir, construir frases y las tareas del cuaderno rojo. Puedes ir a cualquier lección.</p>
+      <p class="lead">Las lecciones de tu libro y cuaderno, en su orden y centradas en hablar: palabras, textos, gramática, escuchar, repetir, hacer de un personaje, decir frases, conversar y las tareas del cuaderno. Toca cualquier paso para ir directo a él.</p>
+      <div class="p-clase"><span>🏫 En clase vamos por la</span><select id="pClase"></select></div>
       <div class="p-prog" id="pProg"></div>
       <div class="note" id="pNote" hidden></div>
       <div class="p-list" id="pLessons"></div>
@@ -1116,6 +1136,7 @@ body.docked .upd{bottom:calc(var(--navh,66px) + 112px)}
     <p class="count" style="margin:0">Se aplican a toda la app y se guardan para <b id="setWho"></b>.</p>
     <h3>Lectura</h3>
     <div class="set-group">
+      <label class="set-row"><span>Practicar escritura en el recorrido<br><small class="count">Desactivado: el recorrido se centra en hablar. Puedes escribir igual en Practicar › Escribir.</small></span><input type="checkbox" id="sWr"></label>
       <div class="set-row col"><span>Tamaño de la letra</span><div class="segc" id="sSize"></div></div>
       <div class="set-row col"><span>Colores según el tono</span><div class="segc" id="sTone"></div><small>Cada sílaba se pinta del color de su tono: rojo 1.º, naranja 2.º, verde 3.º, azul 4.º y gris el neutro.</small></div>
     </div>
@@ -2169,7 +2190,7 @@ function mergeData(a,b){
   const da=a["hsk1-day"],db=b["hsk1-day"];
   if(da||db){const x=da||{},y=db||{};if(x.day&&x.day===y.day){const d={day:x.day};for(const k of new Set([...Object.keys(x),...Object.keys(y)]))if(k!=="day")d[k]=mx(x[k],y[k]);o["hsk1-day"]=d}else o["hsk1-day"]=(x.day||"")>=(y.day||"")?x:y}
   if(a["hsk1-audio"]||b["hsk1-audio"])o["hsk1-audio"]=a["hsk1-audio"]||b["hsk1-audio"];
-  for(const K of ["hsk1-libro"])if(a[K]||b[K]){const x=a[K]||{},y=b[K]||{},dd={};for(const k of new Set([...Object.keys(x.d||{}),...Object.keys(y.d||{})])){const p=(x.d||{})[k]||{},q=(y.d||{})[k]||{};dd[k]={st:mx(p.st,q.st),sc:mx(p.sc,q.sc)}}o[K]={d:dd,cur:x.cur||y.cur||null}}
+  for(const K of ["hsk1-libro"])if(a[K]||b[K]){const x=a[K]||{},y=b[K]||{},dd={};for(const k of new Set([...Object.keys(x.d||{}),...Object.keys(y.d||{})])){const p=(x.d||{})[k]||{},q=(y.d||{})[k]||{};dd[k]={st:mx(p.st,q.st),sc:mx(p.sc,q.sc)}}o[K]={d:dd,cur:x.cur||y.cur||null,clase:x.clase||y.clase||0}}
   if(a["hsk1-wb"]||b["hsk1-wb"]){const x=a["hsk1-wb"]||{},y=b["hsk1-wb"]||{},w={};for(const k of new Set([...Object.keys(x),...Object.keys(y)])){const p=x[k]||{},q=y[k]||{};w[k]={h:p.h==="app"||q.h==="app"?"app":(p.h||q.h),sc:mx(p.sc,q.sc),t:(p.t||"")>(q.t||"")?p.t:q.t}}o["hsk1-wb"]=w}
   if(a["hsk1-path"]||b["hsk1-path"]){const x=a["hsk1-path"]||{},y=b["hsk1-path"]||{},dd={};for(const k of new Set([...Object.keys(x.d||{}),...Object.keys(y.d||{})])){const p=(x.d||{})[k]||{},q=(y.d||{})[k]||{};dd[k]={st:mx(p.st,q.st),sc:mx(p.sc,q.sc)}}o["hsk1-path"]={d:dd,cur:x.cur||y.cur||null}}
   return o}
@@ -2597,7 +2618,7 @@ const PATH=BOOKL.map(L=>Object.assign(L,{w:L.wh.map(h=>V.find(v=>v.h===h)).filte
 const pst=()=>{const o=store.get("hsk1-libro",null)||{};o.d=o.d||{};return o};
 const pstSave=o=>store.set("hsk1-libro",o);
 const pDone=()=>pst().d;
-const PSTEPS={text:["Texto","📖"],gram:["Gramática","💡"],wb:["Cuaderno","📕"],learn:["Palabras","🔤"],listen:["Escucha","👂"],say:["Repite","🗣️"],write:["Escribe","✍️"],build:["Construye","🧩"],conv:["Conversa","💬"]};
+const PSTEPS={rol:["Habla","🎭"],text:["Texto","📖"],gram:["Gramática","💡"],wb:["Cuaderno","📕"],learn:["Palabras","🔤"],listen:["Escucha","👂"],say:["Repite","🗣️"],write:["Escribe","✍️"],build:["Di la frase","🧩"],conv:["Conversa","💬"]};
 const vById=id=>V.find(w=>w.id===id);
 function unitsOf(h,py){const cs=[...h].filter(isHan),sy=String(py).trim().split(/\s+/);if(cs.length===sy.length)return cs.map((c,i)=>[c,sy[i]]);
   if(cs.length===sy.length+1&&h.includes("儿")){const out=[];let j=0;for(let i=0;i<cs.length;i++){if(cs[i]==="儿"&&out.length){out[out.length-1][0]+="儿";continue}out.push([cs[i],sy[j++]])}return out}
@@ -2614,19 +2635,21 @@ function unitMarks(units,h,raw){const r=scoreOf(raw,{h});if(!r)return null;const
 const heardPy=s=>normH(s).join(" ");
 
 let PR=null; // lección en curso
-function pathList(){const d=pDone();const next=PATH.find(L=>!d[L.id]);
+function pathList(){const d=pDone();const cl=claseL();const next=cl?PATH.find(L=>L.id===cl):PATH.find(L=>!d[L.id]);
+  $("#pClase").innerHTML=`<option value="0">— elige —</option>`+PATH.map(L=>`<option value="${L.id}" ${L.id===cl?"selected":""}>lección ${L.id}</option>`).join("");
+  $("#pClase").onchange=e=>{setClase(+e.target.value);pathList();const c=document.querySelector(".p-les.clase");if(c)c.scrollIntoView({block:"center",behavior:"smooth"})};
   const total=PATH.length,done=PATH.filter(L=>d[L.id]).length;
   $("#pProg").innerHTML=`<div class="p-bar"><i style="width:${Math.round(100*done/total)}%"></i></div><span>${done} de ${total} lecciones · ${PATH.reduce((a,L)=>a+((d[L.id]||{}).st||0),0)} ⭐</span>`;
   const cur=pst().cur;
   $("#pLessons").innerHTML=`<button class="p-les p-fon" id="pFonGo"><span class="p-ic">🔊</span><span class="p-tx"><b>Antes de empezar: los sonidos</b><small>Consonantes, vocales y tonos en Fonética</small></span><span class="p-st">›</span></button>`+PATH.map(L=>{const r=d[L.id],isNext=next&&next.id===L.id,locked=false;const ws=wbStat(L);
     const words=L.w.map(vById).filter(Boolean);
-    return`<button class="p-les ${r?"done":isNext?"next":""} ${locked?"locked":""}" data-l="${L.id}">
+    return`<button class="p-les ${r?"done":isNext?"next":""} ${cl===L.id?"clase":""} ${locked?"locked":""}" data-l="${L.id}">
       <span class="p-ic">${locked?"🔒":L.ic}</span>
-      <span class="p-tx"><b>${L.id}. <span class="han">${esc(L.hz)}</span></b><small class="p-es2">${esc(L.t)}</small><small>${L.pl?"Libro pág. "+L.pl+" · ":""}${L.pg?"Cuaderno pág. "+L.pg+" · ":""}${ws.n?"📕 "+ws.done+"/"+ws.n:""}${L.src.startsWith("app")?" · <i>libro pendiente</i>":""}</small>
+      <span class="p-tx"><b>${L.id}. <span class="han">${esc(L.hz)}</span>${cl===L.id?'<span class="p-tag">EN CLASE</span>':""}</b><small class="p-es2">${esc(L.t)}</small><small>${L.pl?"Libro pág. "+L.pl+" · ":""}${L.pg?"Cuaderno pág. "+L.pg+" · ":""}${ws.n?"📕 "+ws.done+"/"+ws.n:""}${L.src.startsWith("app")?" · <i>libro pendiente</i>":""}</small>
       ${cur&&cur.id===L.id?`<em>Seguir por «${PSTEPS[pSteps(L)[cur.si]||"learn"][0]}»</em>`:""}</span>
       <span class="p-st">${r?"⭐".repeat(r.st)+"<i>"+"☆".repeat(3-r.st)+"</i>":isNext?"<span class='p-go'>Empezar</span>":""}</span></button>`}).join("");
 }
-const pSteps=L=>["learn",...(L.tx.length?["text"]:[]),...(L.g.length?["gram"]:[]),"listen","say","write",...(L.s.length?["build"]:[]),...(L.cv!=null?["conv"]:[]),...(L.wb.length?["wb"]:[])];
+const pSteps=L=>["learn",...(L.tx.length?["text"]:[]),...(L.g.length?["gram"]:[]),"listen","say",...(L.tx.length?["rol"]:[]),...(L.s.length?["build"]:[]),...(L.cv!=null?["conv"]:[]),...(S.wr?["write"]:[]),...(L.wb.length?["wb"]:[])];
 $("#pLessons").onclick=e=>{if(e.target.closest("#pFonGo")){goPanel("fon");return}const b=e.target.closest("[data-l]");if(!b)return;const L=PATH.find(x=>x.id===+b.dataset.l);
   if(b.classList.contains("locked")){$("#pNote").hidden=false;$("#pNote").textContent=`Termina antes la lección ${L.id-1}. Así el recorrido va de lo fácil a lo difícil.`;return}
   pStart(L)};
@@ -2635,12 +2658,14 @@ function pStart(L,fresh){const cur=pst().cur;
   if(!fresh&&cur&&cur.id===L.id){PR.si=Math.min(cur.si,PR.steps.length-1);PR.sc=cur.sc||{}}
   $("#rList").hidden=true;$("#pRun").hidden=false;pStep()}
 function pSaveCur(){const o=pst();o.cur={id:PR.L.id,si:PR.si,sc:PR.sc};pstSave(o)}
-function pStepsBar(){$("#pSteps").innerHTML=PR.steps.map((k,i)=>`<span class="${i<PR.si?"ok":i===PR.si?"cur":""}" title="${PSTEPS[k][0]}">${PSTEPS[k][1]}<small>${PSTEPS[k][0]}</small></span>`).join("");
+function pStepsBar(){PR.vis=PR.vis||{};PR.vis[PR.steps[PR.si]]=1;$("#pSteps").innerHTML=PR.steps.map((k,i)=>`<button class="${i===PR.si?"cur":(PR.sc[k]!=null||PR.vis[k])?"ok":""}" data-si="${i}" title="${PSTEPS[k][0]}">${PSTEPS[k][1]}<small>${PSTEPS[k][0]}</small></button>`).join("");
+  const c=$("#pSteps").querySelector(".cur");if(c)c.scrollIntoView({block:"nearest",inline:"center"});
   $("#pTitle").textContent=`${PR.L.ic} Lección ${PR.L.id}: ${PR.L.t}`}
 function pStep(){SYL.run++;fRun++;pMicShow(false);if(PR.si>=PR.steps.length)return pFinish();pStepsBar();pSaveCur();
-  const k=PR.steps[PR.si];({learn:pLearn,text:pText,gram:pGram,listen:pListen,say:pSay,write:pWrite,build:pBuild,conv:pConv,wb:pWb})[k]();
+  const k=PR.steps[PR.si];({learn:pLearn,text:pText,gram:pGram,listen:pListen,say:pSay,rol:pRol,write:pWrite,build:pBuild,conv:pConv,wb:pWb})[k]();
   const r=$("#pRun").getBoundingClientRect();if(r.top<0)$("#pRun").scrollIntoView({block:"start"})}
-function pNextStep(score){const k=PR.steps[PR.si];if(score!=null)PR.sc[k]=Math.max(score,PR.sc[k]||0);PR.si++;pStep()}
+function pNextStep(score){const k=PR.steps[PR.si];if(score!=null)PR.sc[k]=Math.max(score,PR.sc[k]||0);PR.vis=PR.vis||{};PR.vis[k]=1;PR.si++;pStep()}
+$("#pSteps").onclick=e=>{const b=e.target.closest("[data-si]");if(!b||!PR)return;SYL.run++;haltSpeech();PR.onMic=null;PR.si=+b.dataset.si;pStep()};
 const pStage=()=>$("#pStage");
 function pMicShow(on,lab){$("#pMicWrap").hidden=!on;$("#pLive").textContent="";if(on&&lab)$("#pMicWrap .mic-l").dataset.base=lab}
 /* --- 1. Aprende --- */
@@ -2733,7 +2758,7 @@ function pBuild(){const ss=PR.L.s;let i=0;const scores=[];
     const inS=new Set(s.t.map(t=>t[0]));const dis=shuffle(PR.words.filter(w=>!inS.has(w.h)&&!s.h.includes(w.h))).slice(0,target.length>3?2:1).map((w,j)=>({h:w.h,py:w.py.replace(/ /g,""),k:"d"+j}));
     const pool=shuffle([...target,...dis]);let ans=[];
     pStage().innerHTML=`<div class="p-k">Construye la frase ${i+1} de ${ss.length}</div>
-     <div class="p-ask">Di en chino:</div><div class="p-es big">«${esc(s.e)}»</div>
+     <div class="p-ask">¿Cómo se dice en chino? Ordénalo y luego dilo en voz alta:</div><div class="p-es big">«${esc(s.e)}»</div>
      <div class="p-ans" id="pAns"></div><div class="p-pool" id="pPool"></div>
      <div class="fb" id="pFb">Toca las palabras en orden.</div>
      <div class="p-nav"><button class="btn ghost" id="pClr">Borrar</button><button class="btn" id="pChk" disabled>Comprobar</button><button class="btn" id="pNext" hidden>Siguiente ›</button></div>`;
@@ -2745,7 +2770,7 @@ function pBuild(){const ss=PR.L.s;let i=0;const scores=[];
     $("#pClr").onclick=()=>{if(done)return;ans=[];draw()};let done=false;
     $("#pChk").onclick=()=>{tries++;const good=ans.map(x=>x.h).join("")===target.map(x=>x.h).join("");
       if(good){done=true;const sc=tries===1?100:tries===2?70:40;scores.push(sc);addPts(Math.round(sc/10));
-        $("#pAns").classList.add("ok");$("#pFb").className="fb ok";$("#pFb").innerHTML=`¡Correcto! <b>${esc(s.py)}</b>${SR?"<br>Ahora dilo en voz alta con el micrófono (opcional).":""}`;
+        $("#pAns").classList.add("ok");$("#pFb").className="fb ok";$("#pFb").innerHTML=`¡Correcto! <b>${esc(s.py)}</b>${SR?"<br><b>Ahora dilo en voz alta</b> con el micrófono 🎤":""}`;
         $("#pChk").hidden=true;$("#pClr").hidden=true;$("#pNext").hidden=false;speak(s.h);
         if(SR){pMicShow(true);PR.onMic=(cands,err)=>{if(!cands||!cands.length){$("#pFb").textContent=micErr(err);return}let bm=null;for(const c of cands){const m=unitMarks(s.u,s.h,c);if(m&&(!bm||m.score>bm.score))bm=m}
           if(!bm)return;const okk=bm.score>=passK();if(okk)addPts(3);$("#pFb").className="fb "+(okk?"ok":"no");$("#pFb").innerHTML=`${okk?"¡Muy bien dicho!":"Casi."} Nota ${bm.score}. <b>${esc(s.py)}</b>`;if(!okk)speak(s.h)}}}
@@ -2778,8 +2803,8 @@ function pExit(){SYL.run++;haltSpeech();pMicShow(false);$("#pRun").hidden=true;$
 $("#pExit").onclick=pExit;
 makeMic($("#pMic"),{onStart:()=>{SYL.run++;$("#pLive").textContent=""},onLive:t=>{$("#pLive").textContent=t},onDone:(c,err)=>{$("#pLive").textContent="";if(PR&&PR.onMic)PR.onMic(c,err)}});
 /* tarjeta en Inicio */
-function pathHome(){const el=$("#hPath");if(!el)return;const d=pDone(),cur=pst().cur;const L=cur?PATH.find(x=>x.id===cur.id):PATH.find(x=>!d[x.id]);const done=PATH.filter(x=>d[x.id]).length;
-  el.innerHTML=L?`<button class="p-home" id="hPathGo"><span class="p-ic">${L.ic}</span><span class="p-tx"><small>Tu recorrido · ${done} de ${PATH.length}</small><b>${cur?"Seguir":"Empezar"} lección ${L.id}: ${esc(L.t)}</b><span class="p-bar"><i style="width:${Math.round(100*done/PATH.length)}%"></i></span></span><span class="p-go">›</span></button>`
+function pathHome(){const el=$("#hPath");if(!el)return;const d=pDone(),cur=pst().cur,cl=claseL();const L=cur?PATH.find(x=>x.id===cur.id):(cl?PATH.find(x=>x.id===cl):PATH.find(x=>!d[x.id]));const done=PATH.filter(x=>d[x.id]).length;
+  el.innerHTML=L?`<button class="p-home" id="hPathGo"><span class="p-ic">${L.ic}</span><span class="p-tx"><small>${cl?"En clase: lección "+cl+" · ":""}Tu recorrido · ${done} de ${PATH.length}</small><b>${cur?"Seguir":"Empezar"} lección ${L.id}: ${esc(L.t)}</b><span class="p-bar"><i style="width:${Math.round(100*done/PATH.length)}%"></i></span></span><span class="p-go">›</span></button>`
    :`<button class="p-home" id="hPathGo"><span class="p-ic">🏆</span><span class="p-tx"><b>¡Recorrido completado!</b><small>Repite lecciones para conseguir 3 estrellas</small></span><span class="p-go">›</span></button>`;
   $("#hPathGo").onclick=()=>{goPanel("path");if(L)pStart(L)}}
 
@@ -2811,6 +2836,55 @@ function pWb(){pStage().innerHTML=`<div class="p-k">Cuaderno rojo · 学练手�
    <p class="lead" style="margin:0">Las tareas del cuaderno de esta lección. Hazlas en el libro y márcalas, o hazlas aquí.</p><div id="pWbBox"></div>
    <div class="p-nav"><button class="btn" id="pWbNext">Terminar la lección ›</button></div>`;
   wbMount($("#pWbBox"),PR.L);$("#pWbNext").onclick=()=>{const d=wbStat(PR.L);pNextStep(d.n?Math.round(100*d.done/d.n):null)}}
+
+/* --- Habla: haz de un personaje del texto del libro --- */
+function pRol(){const T=PR.L.tx.filter(t=>t.lines.length>=2);if(!T.length)return pNextStep(null);
+  let ti=0,blind=!!store.get("hsk1-rolblind",false);const scores=[];
+  const show=()=>{if(ti>=T.length){const sc=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;return pNextStep(sc)}
+    const t=T[ti];const sp=[...new Set(t.lines.map(l=>l[0]))];let me=sp[1]||sp[0];
+    const intro=()=>{pMicShow(false);
+      pStage().innerHTML=`<div class="p-k">Habla · texto ${ti+1} de ${T.length}</div><div class="bt-place">📍 ${esc(t.t)}</div>
+       <p class="lead" style="margin:0">Tú haces de un personaje: la app dice las frases del otro y tú respondes en voz alta.</p>
+       <div class="p-ask">¿Quién eres?</div><div class="rol-pick">${sp.map(s=>`<button class="btn ${s===me?"":"ghost"}" data-me="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+       <button class="chip" id="rolBlind" aria-pressed="${blind}">🙈 Sin mirar el chino (solo español)</button>
+       <div class="p-nav"><button class="btn ghost" id="rolSkip">Saltar este texto</button><button class="btn" id="rolGo">▶ Empezar</button></div>`;
+      pStage().querySelectorAll("[data-me]").forEach(b=>b.onclick=()=>{me=b.dataset.me;intro()});
+      $("#rolBlind").onclick=()=>{blind=!blind;store.set("hsk1-rolblind",blind);$("#rolBlind").setAttribute("aria-pressed",blind)};
+      $("#rolSkip").onclick=()=>{ti++;show()};$("#rolGo").onclick=play};
+    const play=async()=>{const run=++SYL.run;
+      pStage().innerHTML=`<div class="p-k">Habla · eres <span class="han">${esc(me)}</span></div><div class="rol-chat" id="rolChat"></div><div class="fb" id="pFb"></div><div class="p-heard" id="pHeard"></div><div class="p-nav" id="rolNav"></div>`;
+      const chat=$("#rolChat");const mine=[];
+      for(let i=0;i<t.lines.length;i++){if(run!==SYL.run)return;const[w,wp,h,py,es]=t.lines[i];
+        if(w!==me){pMicShow(false);chat.insertAdjacentHTML("beforeend",`<div class="rol-b ai"><small>${esc(w)}</small><b>${pyHTML(py)}</b><span class="han">${esc(h)}</span><i>${esc(es)}</i></div>`);chat.lastElementChild.scrollIntoView({block:"nearest"});await speak(h);await sleep(300);continue}
+        chat.insertAdjacentHTML("beforeend",`<div class="rol-b me"><small>Tú · di esto:</small><i class="rol-es">${esc(es)}</i><div class="rol-zh" ${blind?"hidden":""}><b>${pyHTML(py)}</b><span class="han">${esc(h)}</span></div>${blind?'<button class="chip rol-show">Ver la frase</button>':""}</div>`);
+        const bub=chat.lastElementChild;bub.scrollIntoView({block:"center",behavior:"smooth"});const sb=bub.querySelector(".rol-show");if(sb)sb.onclick=()=>{bub.querySelector(".rol-zh").hidden=false;sb.remove()};
+        const sc=await new Promise(res=>{let tries=0,best=0;
+          $("#pFb").className="fb";$("#pFb").textContent=SR?"Tu turno: pulsa el micrófono, espera al verde y habla.":"Dilo en voz alta y pulsa «Lo he dicho».";$("#pHeard").textContent="";
+          $("#rolNav").innerHTML=`<button class="btn ghost" id="rolModel">🔊 Modelo</button><button class="btn ghost" id="rolSlow">🐢 Sílabas</button><button class="btn ghost" id="rolNext">${SR?"Saltar":"Lo he dicho ›"}</button>`;
+          $("#rolModel").onclick=()=>speak(h);$("#rolSlow").onclick=()=>speakSyl(unitsOf2(h,py),null);$("#rolNext").onclick=()=>res(SR?Math.max(best,0):70);
+          pMicShow(!!SR);
+          PR.onMic=(cands,err)=>{if(!cands||!cands.length){$("#pFb").className="fb no";$("#pFb").textContent=micErr(err);return}
+            let bm=null,heard="";for(const c of cands){const r=scoreOf(c,{h});if(r&&(!bm||r.score>bm.score)){bm=r;heard=c}}
+            if(!bm){$("#pFb").className="fb no";$("#pFb").textContent="He oído algo, pero no en chino. Prueba otra vez.";return}
+            tries++;best=Math.max(best,bm.score);const ok=bm.score>=passK();
+            $("#pHeard").innerHTML=`He entendido: <span class="han">${esc(heard)}</span> <small>(${esc(heardPy(heard))})</small>`;
+            const chip=document.createElement("span");chip.className="score-chip "+(ok?"ok":"no");chip.textContent=(ok?"✓ ":"")+bm.score;bub.querySelector(".score-chip")?.remove();bub.append(chip);
+            if(ok){addPts(Math.round(bm.score/10));stat("speakOk");$("#pFb").className="fb ok";$("#pFb").textContent=bm.score>=90?"¡Excelente!":"¡Bien!";bub.querySelector(".rol-zh").hidden=false;setTimeout(()=>res(best),700)}
+            else{$("#pFb").className="fb no";$("#pFb").innerHTML=`Nota ${bm.score}. Escucha el modelo y prueba otra vez.${tries>=3?" O pulsa Saltar.":""}`;bub.querySelector(".rol-zh").hidden=false;speak(h)}};
+        });
+        if(run!==SYL.run)return;mine.push(sc);PR.onMic=null}
+      pMicShow(false);const avg=mine.length?Math.round(mine.reduce((a,b)=>a+b,0)/mine.length):0;scores.push(avg);
+      $("#pFb").className="fb "+(avg>=passK()?"ok":"no");$("#pFb").textContent=`Diálogo terminado · nota ${avg}`;$("#pHeard").textContent="";
+      $("#rolNav").innerHTML=`<button class="btn ghost" id="rolAgain">↺ Otra vez</button><button class="btn ghost" id="rolSwap">Cambiar de personaje</button><button class="btn" id="rolOn">${ti<T.length-1?"Siguiente texto ›":"Seguir ›"}</button>`;
+      $("#rolAgain").onclick=()=>{scores.pop();play()};$("#rolSwap").onclick=()=>{scores.pop();me=sp.find(s=>s!==me)||me;play()};$("#rolOn").onclick=()=>{ti++;show()}};
+    intro()};
+  show()}
+function unitsOf2(h,py){const cs=[...h].filter(isHan),sy=String(py).replace(/[,.!?;:，。！？]/g," ").split(/\s+/).filter(Boolean);
+  const out=[];let j=0;for(const w of sy){const n=(w.match(/[aeiouüāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]+/gi)||[]).length||1;const seg=cs.slice(j,j+n).join("");j+=n;if(seg)out.push([seg,w])}
+  if(j<cs.length)out.push([cs.slice(j).join(""),""]);return out}
+/* lección de clase */
+function claseL(){return pst().clase||0}
+function setClase(v){const o=pst();o.clase=v;pstSave(o)}
 
 /* ===== cuaderno ===== */
 const wbS=()=>store.get("hsk1-wb",{})||{};
@@ -2921,6 +2995,7 @@ $("#wbLs").onclick=e=>{const b=e.target.closest("[data-l]");if(!b)return;WBST.L=
 
 {const _rh=renderHome;renderHome=function(){_rh();pathHome()}}
 
+{const c=document.getElementById("sWr");c.checked=!!S.wr;c.onchange=()=>{S.wr=c.checked;store.set("hsk1-audio",S)}}
 /* ===== micrófono fijo ===== */
 {const dock=$("#micDock");const slots=[["#kMic",()=>cur==="speak"&&!$("#kStage").hidden],["#cvMic",()=>cur==="conv"&&!$("#cvRoom").hidden],["#pMic",()=>cur==="path"&&!$("#pRun").hidden&&!$("#pMicWrap").hidden]]
   .map(([sel,when])=>{const b=$(sel);if(!b)return null;const w=b.closest(".mic-wrap");dock.appendChild(w);w.hidden=true;return{w,when}}).filter(Boolean);
@@ -3011,7 +3086,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();startSync();
-const APP_VER="2026-10-22.2";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-22.3";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();

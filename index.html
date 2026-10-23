@@ -985,7 +985,7 @@ body.docked .upd{bottom:calc(var(--navh,66px) + 112px)}
     <div class="bar" id="fTabs"><button class="chip" data-w="ini" aria-pressed="true">Consonantes</button><button class="chip" data-w="fin" aria-pressed="false">Vocales</button></div>
     <div class="f-table" id="fTable"></div>
     <div class="f-tip" id="fTip" hidden></div>
-    <button class="f-emph" id="fEmph" aria-pressed="false"><span class="f-sw" aria-hidden="true"></span><span><b>🔍 Fonética acentuada</b><small>Oyes cada sílaba lenta y dos veces, ves una pista de cómo se pronuncia cada opción y puedes comparar los sonidos parecidos.</small></span></button>
+    <button class="f-emph" id="fEmph" aria-pressed="false"><span class="f-sw" aria-hidden="true"></span><span><b>🔍 Fonética acentuada</b><small>Oyes cada sílaba lenta (y dos veces si lo activas en Ajustes), ves una pista de cómo se pronuncia cada opción y puedes comparar los sonidos parecidos.</small></span></button>
     <h3>Ejercicios</h3>
     <div class="bar" id="fKinds">
       <button class="chip" data-kind="ini" aria-pressed="true">Consonantes</button>
@@ -1160,6 +1160,7 @@ body.docked .upd{bottom:calc(var(--navh,66px) + 112px)}
     <p class="count" style="margin:0">Se aplican a toda la app y se guardan para <b id="setWho"></b>.</p>
     <h3>Lectura</h3>
     <div class="set-group">
+      <label class="set-row"><span>Repetir el audio<br><small class="count">Activado: cada palabra o frase suena dos veces y, si fallas, se repite sílaba a sílaba. Desactivado: suena una vez y la repites tú cuando quieras con 🔊.</small></span><input type="checkbox" id="sRep2"></label>
       <label class="set-row"><span>Practicar escritura en el recorrido<br><small class="count">Desactivado: el recorrido se centra en hablar. Puedes escribir igual en Practicar › Escribir.</small></span><input type="checkbox" id="sWr"></label>
       <div class="set-row col"><span>Tamaño de la letra</span><div class="segc" id="sSize"></div></div>
       <div class="set-row col"><span>Colores según el tono</span><div class="segc" id="sTone"></div><small>Cada sílaba se pinta del color de su tono: rojo 1.º, naranja 2.º, verde 3.º, azul 4.º y gris el neutro.</small></div>
@@ -2215,7 +2216,7 @@ function mergeData(a,b){
   if(da||db){const x=da||{},y=db||{};if(x.day&&x.day===y.day){const d={day:x.day};for(const k of new Set([...Object.keys(x),...Object.keys(y)]))if(k!=="day")d[k]=mx(x[k],y[k]);o["hsk1-day"]=d}else o["hsk1-day"]=(x.day||"")>=(y.day||"")?x:y}
   if(a["hsk1-audio"]||b["hsk1-audio"])o["hsk1-audio"]=a["hsk1-audio"]||b["hsk1-audio"];
   for(const K of ["hsk1-libro"])if(a[K]||b[K]){const x=a[K]||{},y=b[K]||{},dd={};for(const k of new Set([...Object.keys(x.d||{}),...Object.keys(y.d||{})])){const p=(x.d||{})[k]||{},q=(y.d||{})[k]||{};dd[k]={st:mx(p.st,q.st),sc:mx(p.sc,q.sc)}}o[K]={d:dd,cur:x.cur||y.cur||null,clase:x.clase||y.clase||0}}
-  if(a["hsk1-wb"]||b["hsk1-wb"]){const x=a["hsk1-wb"]||{},y=b["hsk1-wb"]||{},w={};for(const k of new Set([...Object.keys(x),...Object.keys(y)])){const p=x[k]||{},q=y[k]||{};w[k]={h:p.h==="app"||q.h==="app"?"app":(p.h||q.h),sc:mx(p.sc,q.sc),t:(p.t||"")>(q.t||"")?p.t:q.t}}o["hsk1-wb"]=w}
+  if(a["hsk1-wb"]||b["hsk1-wb"]){const x=a["hsk1-wb"]||{},y=b["hsk1-wb"]||{},w={};for(const k of new Set([...Object.keys(x),...Object.keys(y)])){const p=x[k]||{},q=y[k]||{};w[k]=(p.t||"")>=(q.t||"")?p:q}o["hsk1-wb"]=w}
   if(a["hsk1-path"]||b["hsk1-path"]){const x=a["hsk1-path"]||{},y=b["hsk1-path"]||{},dd={};for(const k of new Set([...Object.keys(x.d||{}),...Object.keys(y.d||{})])){const p=(x.d||{})[k]||{},q=(y.d||{})[k]||{};dd[k]={st:mx(p.st,q.st),sc:mx(p.sc,q.sc)}}o["hsk1-path"]={d:dd,cur:x.cur||y.cur||null}}
   return o}
 const meProf=()=>PROF.find(x=>x.id===ME);
@@ -2615,7 +2616,7 @@ function fEmphSet(v){FEMPH=v;store.set("hsk1-fonemph",v);$("#fEmph").setAttribut
 $("#fEmph").onclick=()=>fEmphSet(!FEMPH);$("#fEmph").setAttribute("aria-pressed",FEMPH);
 let fRun=0;
 /* reproduce una sílaba: normal, o lenta y dos veces si está activada la fonética acentuada */
-async function fSay(h,emph=FEMPH){const run=++fRun;if(!emph)return speak(h);await speak(h,.5);if(run!==fRun)return;await sleep(500);if(run!==fRun)return;await speak(h,.5)}
+async function fSay(h,emph=FEMPH){const run=++fRun;if(!emph)return speak(h);await speak(h,.5);if(run!==fRun||!S.rep2)return;await sleep(500);if(run!==fRun)return;await speak(h,.5)}
 /* sílaba de ejemplo para cada opción de la pregunta actual */
 function fOptItems(){const q=F.q;if(!q)return[];const fam=q.fam?q.fam.items:[q.w];
   if(q.kind==="ini")return[...document.querySelectorAll("#fChoices .f-opt")].map(b=>({b,it:fam.find(x=>fIni(x.py)===b.dataset.v)})).filter(x=>x.it);
@@ -2702,7 +2703,7 @@ function pLearn(){let i=0;const ws=PR.words;
     <div class="p-nav">${i>0?'<button class="btn ghost" id="pPrev">‹ Anterior</button>':""}<button class="btn" id="pNext">${i<ws.length-1?"Siguiente ›":"Ya las he visto ›"}</button></div>`;
     $("#rPlay").onclick=()=>speak(w.h);$("#pSyl").onclick=()=>speakSyl(u,$("#pPy"));
     $("#pNext").onclick=()=>{if(i<ws.length-1){i++;show()}else pNextStep(100)};const pv=$("#pPrev");if(pv)pv.onclick=()=>{i--;show()};
-    setTimeout(()=>speakSyl(u,$("#pPy")),300)};
+    setTimeout(()=>S.rep2?speakSyl(u,$("#pPy")):speak(w.h),300)};
   show()}
 /* --- 2. Escucha --- */
 function pListen(){const ws=PR.words;const qs=[...shuffle(ws).slice(0,6).map(w=>({h:w.h,e:w.e,py:w.py,w})),...shuffle(PR.L.s).slice(0,2).map(s=>({h:s.h,e:s.e,py:s.py,s}))];
@@ -2748,7 +2749,7 @@ function pSay(){const items=[...PR.words.slice(0,PR.L.s.length?4:6).map(w=>({h:w
       $("#pFb").className="fb "+(ok?"ok":"no");
       $("#pFb").innerHTML=ok?`${bm.score>=90?"¡Excelente!":"¡Bien!"} · nota ${bm.score}`:`<span>Nota ${bm.score}. ${bad.length?`Repasa ${bad.map(x=>"«"+esc(x)+"»").join(", ")} (en rojo). `:""}Escucha sílaba a sílaba y prueba otra vez.</span>`;
       if(ok){addPts(Math.round(bm.score/10));stat("speakOk");$("#pNext").hidden=false;$("#pSkip").hidden=true;setTimeout(()=>{if(PR&&PR.steps[PR.si]==="say"&&items[i]===it)speak(it.h)},200)}
-      else{if(tries>=3){$("#pNext").hidden=false;$("#pSkip").hidden=true}setTimeout(()=>speakSyl(it.u,$("#pPy")),500)}};
+      else{if(tries>=3){$("#pNext").hidden=false;$("#pSkip").hidden=true}if(S.rep2)setTimeout(()=>speakSyl(it.u,$("#pPy")),500)}};
     setTimeout(()=>speak(it.h),300)};
   show()}
 /* --- 4. Escribe --- */
@@ -2850,10 +2851,10 @@ function pText(){const T=PR.L.tx;let ti=0,showEs=true;
     $("#btEs").onclick=()=>{showEs=!showEs;$("#btEs").setAttribute("aria-pressed",showEs);pStage().querySelectorAll(".bt-es").forEach(x=>x.hidden=!showEs)};
     $("#btNext").onclick=()=>{SYL.run++;if(ti<T.length-1){ti++;show()}else pNextStep(null)};const pv=$("#btPrev");if(pv)pv.onclick=()=>{SYL.run++;ti--;show()}};
   show()}
-function pGram(){const G=PR.L.g;const tp=(LESSON_TOPICS[PR.L.id]||[]).map(gTopic).filter(Boolean);
+function pGram(){const G=PR.L.g;
   pStage().innerHTML=`<div class="p-k">Gramática · 小语讲堂</div>
-   ${tp.length?`<div class="bg-es" style="width:100%"><h4>Explicado en español</h4>${tp.map((t,i)=>gCard(t.c,i===0)).join("")}<button class="chip" data-goguide="${tp[0].k}">📚 Ver la guía completa de gramática</button></div><h4 style="margin:10px 0 0">Del libro (小语讲堂)</h4>`:""}
    ${G.map(g=>`<div class="bg-card"><div class="bg-p">💡 ${esc(g.p)}</div>${g.ej.map(([h,py])=>`<div class="bg-ex"><button class="spk" data-say="${esc(h)}" aria-label="Escuchar"></button><div><div class="bg-py">${esc(py)}</div><div class="han">${esc(h)}</div></div></div>`).join("")}</div>`).join("")}
+   ${PR.L.id>=10?'<p class="count">Resumen preparado por la app a partir del cuaderno. Cuando tengamos las fotos del libro de esta lección, se usará su gramática.</p>':""}
    <div class="p-nav"><button class="btn" id="bgNext">Entendido ›</button></div>`;
   fillSpk(pStage());$("#bgNext").onclick=()=>pNextStep(null)}
 function pWb(){pStage().innerHTML=`<div class="p-k">Cuaderno rojo · 学练手册${PR.L.pg?` · desde pág. ${PR.L.pg}`:""}</div>
@@ -2927,8 +2928,10 @@ document.addEventListener("click",e=>{const b=e.target.closest("#gIdx [data-g]")
   const g=e.target.closest("[data-goguide]");if(g){goPanel("gram");setTimeout(()=>{const t=$("#gs-"+g.dataset.goguide);if(t)t.scrollIntoView({block:"start"})},50)}},true);
 
 /* ===== cuaderno ===== */
-const wbS=()=>store.get("hsk1-wb",{})||{};
-function wbMark(id,h,sc){const o=wbS();const p=o[id]||{};o[id]={h:p.h==="app"&&h==="libro"?"app":h,sc:Math.max(sc??0,p.sc??0),t:today()};store.set("hsk1-wb",o);stat("wb");checkMedals()}
+const wbRaw=()=>store.get("hsk1-wb",{})||{};
+const wbS=()=>{const o=wbRaw(),r={};for(const k in o)if(o[k]&&!o[k].del)r[k]=o[k];return r};
+function wbUnmark(id){const o=wbRaw();o[id]={del:1,t:new Date().toISOString()};store.set("hsk1-wb",o)}
+function wbMark(id,h,sc){const o=wbRaw();const p=(o[id]&&!o[id].del)?o[id]:{};o[id]={h:p.h==="app"&&h==="libro"?"app":h,sc:Math.max(sc??0,p.sc??0),t:new Date().toISOString()};store.set("hsk1-wb",o);stat("wb");checkMedals()}
 function wbStat(L){const o=wbS();const n=L.wb.length,done=L.wb.filter(t=>o[t.id]).length;return{n,done}}
 const WBK={pair:"Escucha y elige",tone:"Escucha y marca el tono",odd:"Elige el diferente",rep:"Escucha y repite",info:"Explicación",strokes:"Trazos",write:"Escribe",readlist:"Lee y escucha",une:"Une",fill:"Completa",read:"Lee y responde",match:"Escucha y une",inton:"Entonación",book:"Solo en el libro"};
 const wbApp=t=>t.k!=="book";
@@ -2938,14 +2941,15 @@ function wbMount(box,L){
     box.innerHTML=L.wb.length?L.wb.map(t=>{const d=o[t.id];return`<div class="wb-task ${d?"done":""}" data-id="${t.id}">
       <div class="wb-top"><span class="wb-sec">${t.pg?"pág. "+t.pg+" · ":""}${esc(t.sec||"")}</span>${d?`<span class="wb-ok">✓ ${d.h==="app"?"en la app"+(d.sc?" · "+d.sc:""):"en el libro"}</span>`:""}</div>
       <b>${esc(t.t)}</b>${t.why?`<small>${esc(t.why)}</small>`:""}
-      <div class="wb-acts">${wbApp(t)?`<button class="btn" data-wa="app">✏️ ${["info","strokes"].includes(t.k)?"Ver":"Hacer"} en la app</button>`:""}<button class="btn ghost" data-wa="libro">📖 Lo hice en el libro</button>${wbHasSol(t)&&d?'<button class="chip" data-wa="sol">Ver solución</button>':""}</div>
+      <div class="wb-acts">${wbApp(t)?`<button class="btn ${d?"ghost":""}" data-wa="app">✏️ ${["info","strokes"].includes(t.k)?"Ver":d?"Repetir":"Hacer"} en la app</button>`:""}${d&&d.h==="libro"?"":`<button class="btn ghost" data-wa="libro">📖 Lo hice en el libro</button>`}${wbHasSol(t)?'<button class="chip" data-wa="sol">Ver solución</button>':""}${d?'<button class="chip" data-wa="undo">↺ Desmarcar</button>':""}</div>
       <div class="wb-sol" hidden></div></div>`}).join(""):`<p class="lead">Todavía no tengo las páginas del cuaderno de esta lección. Mándame las fotos y las añado.</p>`;
     box.onclick=e=>{const b=e.target.closest("[data-wa]");if(!b)return;const card=b.closest(".wb-task"),t=L.wb.find(x=>x.id===card.dataset.id);
       if(b.dataset.wa==="libro"){wbMark(t.id,"libro");list();const c=box.querySelector(`[data-id="${t.id}"]`);if(wbHasSol(t)){const s=c.querySelector(".wb-sol");s.hidden=false;s.innerHTML=`<div class="count">¿Quieres comprobarlo?</div>`+wbSol(t)}return}
+      if(b.dataset.wa==="undo"){wbUnmark(t.id);list();return}
       if(b.dataset.wa==="sol"){const s=card.querySelector(".wb-sol");s.hidden=!s.hidden;s.innerHTML=wbSol(t);fillSpk(s);return}
       run(t)}};
-  const run=t=>{box.onclick=null;box.innerHTML=`<div class="wb-run"><div class="wb-runh"><button class="chip" id="wbBack">‹ Volver a la lista</button><span class="wb-sec">${t.pg?"pág. "+t.pg+" · ":""}${esc(t.sec||"")}</span></div><h3 style="margin:6px 0">${esc(t.t)}</h3><div id="wbBody"></div></div>`;
-    $("#wbBack").onclick=()=>{SYL.run++;list()};
+  const run=t=>{box.onclick=null;box.innerHTML=`<div class="wb-run"><div class="wb-runh"><button class="chip" id="wbBack">‹ Volver a la lista</button><button class="chip" id="wbRep" aria-pressed="${!!S.rep2}">🔁 Audio dos veces</button><span class="wb-sec">${t.pg?"pág. "+t.pg+" · ":""}${esc(t.sec||"")}</span></div><h3 style="margin:6px 0">${esc(t.t)}</h3><div id="wbBody"></div></div>`;
+    $("#wbBack").onclick=()=>{SYL.run++;list()};$("#wbRep").onclick=()=>{S.rep2=!S.rep2;store.set("hsk1-audio",S);$("#wbRep").setAttribute("aria-pressed",S.rep2);const c=document.getElementById("sRep2");if(c)c.checked=S.rep2};
     wbRun(t,$("#wbBody"),sc=>{wbMark(t.id,"app",sc);setTimeout(list,sc==null?0:900)});
     box.scrollIntoView({block:"start"})};
   list()}
@@ -2970,7 +2974,7 @@ function wbQuiz(body,qs,done){let i=0,ok=0;
       $("#wqFb").className="fb "+(good?"ok":"no");$("#wqFb").innerHTML=(good?"¡Bien! ":"Era: ")+(q.after||"");fillSpk($("#wqFb"));$("#wqNext").hidden=false;q.onAns&&q.onAns()};
     $("#wqNext").onclick=()=>{i++;show()}};
   show()}
-const spk2=async(h,slow)=>{const run=++SYL.run;await speak(h,slow?BKSPEED()*.7:BKSPEED());if(run!==SYL.run)return;await sleep(600);if(run!==SYL.run)return;await speak(h,slow?BKSPEED()*.7:BKSPEED())};
+const spk2=async(h,slow)=>{const run=++SYL.run;await speak(h,slow?BKSPEED()*.7:BKSPEED());if(run!==SYL.run||!S.rep2)return;await sleep(600);if(run!==SYL.run)return;await speak(h,slow?BKSPEED()*.7:BKSPEED())};
 const pyBig=py=>`<b class="wq-py">${pyHTML(py)}</b>`;
 const hzPy=(h,py)=>`<span class="wq-h han">${esc(h)}</span><small>${esc(py)}</small>`;
 function wbRun(t,body,done){
@@ -3035,6 +3039,7 @@ $("#wbLs").onclick=e=>{const b=e.target.closest("[data-l]");if(!b)return;WBST.L=
 
 {const _rh=renderHome;renderHome=function(){_rh();pathHome()}}
 
+{const c=document.getElementById("sRep2");c.checked=!!S.rep2;c.onchange=()=>{S.rep2=c.checked;store.set("hsk1-audio",S)}}
 {const c=document.getElementById("sWr");c.checked=!!S.wr;c.onchange=()=>{S.wr=c.checked;store.set("hsk1-audio",S)}}
 /* ===== micrófono fijo ===== */
 {const dock=$("#micDock");const slots=[["#kMic",()=>cur==="speak"&&!$("#kStage").hidden],["#cvMic",()=>cur==="conv"&&!$("#cvRoom").hidden],["#pMic",()=>cur==="path"&&!$("#pRun").hidden&&!$("#pMicWrap").hidden]]
@@ -3126,7 +3131,7 @@ $("#cSpk").innerHTML=SPK;$("#kSpk").innerHTML=SPK;$("#bbSpk").innerHTML=SPK;
 goPanel(store.get("hsk1-panel","home"));
 initProfiles();
 medalsReady=true;checkMedals();startSync();
-const APP_VER="2026-10-23.1";$("#verTxt").textContent="Versión "+APP_VER;
+const APP_VER="2026-10-23.2";$("#verTxt").textContent="Versión "+APP_VER;
 async function checkUpdate(){try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VER="([^"]+)"/);if(m&&m[1]>APP_VER)$("#upd").hidden=false}catch(e){}}
 $("#updBtn").onclick=()=>{location.replace(location.pathname+"?v="+Date.now())};
 setTimeout(checkUpdate,3000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkUpdate()});if(cur==="home")renderHome();
